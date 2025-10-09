@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 val signingPropertiesFile = file("./signing.properties")
 val signingProperties = Properties()
@@ -25,7 +25,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.template"
+    namespace = "top.luxcis.pokedex"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -40,7 +40,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.template"
+        applicationId = "top.luxcis.pokedex"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

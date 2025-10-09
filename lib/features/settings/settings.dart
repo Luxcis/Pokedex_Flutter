@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/features/settings/language_settings.dart';
+import 'package:pokedex/l10n/app_localizations.dart';
+import 'package:pokedex/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_android_template/features/settings/language_settings.dart';
-import 'package:flutter_android_template/l10n/app_localizations.dart';
-import 'package:flutter_android_template/providers/theme_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
