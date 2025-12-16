@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokedex/features/pokemon/widgets/pokemon_sprite_icon.dart';
 import 'package:pokedex/models/pokemon_model.dart';
@@ -57,11 +55,7 @@ class _PokemonPageState extends State<PokemonPage> {
               prefixIcon: const Icon(Icons.search, color: Colors.grey),
             ),
             onChanged: (text) {
-              // 实时搜索
               context.read<PokemonProvider>().searchPokemon(text);
-            },
-            onSubmitted: (text) {
-              log('提交搜索: $text');
             },
           ),
         ),
