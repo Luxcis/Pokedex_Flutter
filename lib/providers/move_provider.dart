@@ -11,12 +11,19 @@ class MoveProvider extends ChangeNotifier {
   String _searchQuery = '';
   bool _isLoading = false;
   String? _errorMessage;
+  // 选中的筛选项：属性、世代、类别
+  final Set<String> _selectedTypes = {};
+  final Set<String> _selectedGenerations = {};
+  final Set<String> _selectedCategories = {};
 
   List<MoveModel> get allMoveList => _allMoveList;
   List<MoveModel> get filteredMoveList => _filteredMoveList;
   String get searchQuery => _searchQuery;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  Set<String> get selectedTypes => _selectedTypes;
+  Set<String> get selectedGenerations => _selectedGenerations;
+  Set<String> get selectedCategories => _selectedCategories;
 
   /// 加载招式数据
   Future<void> loadMoveData() async {
@@ -45,26 +52,79 @@ class MoveProvider extends ChangeNotifier {
   /// 搜索招式
   void searchMove(String query) {
     _searchQuery = query.trim().toLowerCase();
-
-    if (_searchQuery.isEmpty) {
-      _filteredMoveList = _allMoveList;
-    } else {
-      _filteredMoveList = _allMoveList.where((move) {
-        return move.name.toLowerCase().contains(_searchQuery) ||
-            move.nameEn.toLowerCase().contains(_searchQuery) ||
-            move.nameJp.toLowerCase().contains(_searchQuery) ||
-            move.index.toLowerCase().contains(_searchQuery) ||
-            move.type.toLowerCase().contains(_searchQuery) ||
-            move.category.toLowerCase().contains(_searchQuery);
-      }).toList();
-    }
-
-    notifyListeners();
+    _applyFilters();
   }
 
   void clearSearch() {
     _searchQuery = '';
-    _filteredMoveList = _allMoveList;
+    _applyFilters();
+  }
+
+  /// 应用筛选逻辑：同时考虑搜索、属性、世代、类别
+  void _applyFilters() {
+    Iterable<MoveModel> base = _allMoveList;
+
+    if (_searchQuery.isNotEmpty) {
+      final q = _searchQuery;
+      base = base.where((move) {
+        return move.name.toLowerCase().contains(q) ||
+            move.nameEn.toLowerCase().contains(q) ||
+            move.nameJp.toLowerCase().contains(q) ||
+            move.index.toLowerCase().contains(q) ||
+            move.type.toLowerCase().contains(q) ||
+            move.category.toLowerCase().contains(q);
+      });
+    }
+
+    if (_selectedTypes.isNotEmpty) {
+      base = base.where((m) => _selectedTypes.contains(m.type));
+    }
+    if (_selectedGenerations.isNotEmpty) {
+      base = base.where((m) => _selectedGenerations.contains(m.generation));
+    }
+    if (_selectedCategories.isNotEmpty) {
+      base = base.where((m) => _selectedCategories.contains(m.category));
+    }
+
+    _filteredMoveList = base.toList();
     notifyListeners();
+  }
+
+  /// 切换属性选择
+  void toggleType(String type) {
+    if (_selectedTypes.contains(type)) {
+      _selectedTypes.remove(type);
+    } else {
+      _selectedTypes.add(type);
+    }
+    _applyFilters();
+  }
+
+  /// 切换世代选择
+  void toggleGeneration(String generation) {
+    if (_selectedGenerations.contains(generation)) {
+      _selectedGenerations.remove(generation);
+    } else {
+      _selectedGenerations.add(generation);
+    }
+    _applyFilters();
+  }
+
+  /// 切换类别选择
+  void toggleCategory(String category) {
+    if (_selectedCategories.contains(category)) {
+      _selectedCategories.remove(category);
+    } else {
+      _selectedCategories.add(category);
+    }
+    _applyFilters();
+  }
+
+  /// 重置筛选
+  void resetFilters() {
+    _selectedTypes.clear();
+    _selectedGenerations.clear();
+    _selectedCategories.clear();
+    _applyFilters();
   }
 }

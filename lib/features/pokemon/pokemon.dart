@@ -36,27 +36,35 @@ class _PokemonPageState extends State<PokemonPage> {
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: '搜索',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide.none,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: '搜索',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  ),
+                  onChanged: (text) {
+                    context.read<PokemonProvider>().searchPokemon(text);
+                  },
+                ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: const Icon(Icons.search, color: Colors.grey),
-            ),
-            onChanged: (text) {
-              context.read<PokemonProvider>().searchPokemon(text);
-            },
+              const SizedBox(width: 8),
+              _buildFilterButton(() => _showPokemonFilterDialog()),
+            ],
           ),
         ),
         actions: const [],
@@ -129,6 +137,188 @@ class _PokemonPageState extends State<PokemonPage> {
             },
           );
         },
+      ),
+    );
+  }
+
+  /// 构建筛选按钮：40x40，内边距8，圆角与阴影与现有风格一致
+  Widget _buildFilterButton(VoidCallback onTap) {
+    final bgColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 40,
+          height: 40,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: const Icon(Icons.filter_list, color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  /// 弹出宝可梦筛选面板：包含属性与世代，支持多选
+  void _showPokemonFilterDialog() {
+    final provider = context.read<PokemonProvider>();
+    final Set<String> tempTypes = {...provider.selectedTypes};
+    final Set<String> tempGens = {...provider.selectedGenerations};
+
+    final allTypes = {
+      for (final p in provider.allPokemonList) ...p.types
+    }.toList()
+      ..sort();
+    final allGens = {
+      for (final p in provider.allPokemonList) p.generation
+    }.toList()
+      ..sort();
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 280),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          '筛选',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(ctx).pop(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('属性', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: allTypes.map((t) {
+                      final selected = tempTypes.contains(t);
+                      final color = selected
+                          ? PokemonTypeColors.getTypeColor(t)
+                          : const Color(0xFFE0E0E0);
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (selected) {
+                              tempTypes.remove(t);
+                            } else {
+                              tempTypes.add(t);
+                            }
+                          });
+                        },
+                        child: _buildSelectableChip(t, selected, color),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('世代', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: allGens.map((g) {
+                      final selected = tempGens.contains(g);
+                      final color = selected ? Colors.black : const Color(0xFFE0E0E0);
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (selected) {
+                              tempGens.remove(g);
+                            } else {
+                              tempGens.add(g);
+                            }
+                          });
+                        },
+                        child: _buildSelectableChip(g, selected, color),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            provider.resetFilters();
+                            for (final t in tempTypes) {
+                              provider.toggleType(t);
+                            }
+                            for (final g in tempGens) {
+                              provider.toggleGeneration(g);
+                            }
+                            Navigator.of(ctx).pop();
+                          },
+                          child: const Text('应用'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              tempTypes.clear();
+                              tempGens.clear();
+                            });
+                            provider.resetFilters();
+                          },
+                          child: const Text('重置'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        );
+      },
+    );
+  }
+
+  /// 通用可选标签：默认灰色(#E0E0E0)，选中按照规则着色
+  Widget _buildSelectableChip(String text, bool selected, Color bgColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: selected ? Colors.white : Colors.black87,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
