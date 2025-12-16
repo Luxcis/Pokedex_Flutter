@@ -175,157 +175,192 @@ class _MovePageState extends State<MovePage> {
     showDialog(
       context: context,
       builder: (ctx) {
-        return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 280),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Dialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 280),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Expanded(
-                          child: Text(
-                            '筛选',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                '筛选',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () => Navigator.of(ctx).pop(),
+                            ),
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.of(ctx).pop(),
+                        const SizedBox(height: 8),
+                        Text('属性（已选 ${tempTypes.length}/2）', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: allTypes.map((t) {
+                            final selected = tempTypes.contains(t);
+                            final color = selected
+                                ? PokemonTypeColors.getTypeColor(t)
+                                : const Color(0xFFE0E0E0);
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  setDialogState(() {
+                                    if (selected) {
+                                      tempTypes.remove(t);
+                                    } else {
+                                      if (tempTypes.length >= 2) {
+                                        final String first = tempTypes.first;
+                                        tempTypes.remove(first);
+                                      }
+                                      tempTypes.add(t);
+                                    }
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: _buildSelectableChip(t, selected, color),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text('世代', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: allGens.map((g) {
+                            final selected = tempGens.contains(g);
+                            final color = selected ? Colors.black : const Color(0xFFE0E0E0);
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  setDialogState(() {
+                                    if (selected) {
+                                      tempGens.remove(g);
+                                    } else {
+                                      tempGens
+                                        ..clear()
+                                        ..add(g);
+                                    }
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: _buildSelectableChip(g, selected, color),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text('类别', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: allCats.map((c) {
+                            final selected = tempCats.contains(c);
+                            final color = selected
+                                ? MoveCategoryColors.getCategoryColor(c)
+                                : const Color(0xFFE0E0E0);
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  setDialogState(() {
+                                    if (selected) {
+                                      tempCats.remove(c);
+                                    } else {
+                                      tempCats
+                                        ..clear()
+                                        ..add(c);
+                                    }
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: _buildSelectableChip(c, selected, color),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  provider.resetFilters();
+                                  for (final t in tempTypes) {
+                                    provider.toggleType(t);
+                                  }
+                                  for (final g in tempGens) {
+                                    provider.toggleGeneration(g);
+                                  }
+                                  for (final c in tempCats) {
+                                    provider.toggleCategory(c);
+                                  }
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: const Text('应用'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setDialogState(() {
+                                    tempTypes.clear();
+                                    tempGens.clear();
+                                    tempCats.clear();
+                                  });
+                                  provider.resetFilters();
+                                },
+                                child: const Text('重置'),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    const Text('属性', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: allTypes.map((t) {
-                        final selected = tempTypes.contains(t);
-                        final color = selected
-                            ? PokemonTypeColors.getTypeColor(t)
-                            : const Color(0xFFE0E0E0);
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (selected) {
-                                tempTypes.remove(t);
-                              } else {
-                                tempTypes.add(t);
-                              }
-                            });
-                          },
-                          child: _buildSelectableChip(t, selected, color),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text('世代', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: allGens.map((g) {
-                        final selected = tempGens.contains(g);
-                        final color = selected ? Colors.black : const Color(0xFFE0E0E0);
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (selected) {
-                                tempGens.remove(g);
-                              } else {
-                                tempGens.add(g);
-                              }
-                            });
-                          },
-                          child: _buildSelectableChip(g, selected, color),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text('类别', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: allCats.map((c) {
-                        final selected = tempCats.contains(c);
-                        final color = selected
-                            ? MoveCategoryColors.getCategoryColor(c)
-                            : const Color(0xFFE0E0E0);
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (selected) {
-                                tempCats.remove(c);
-                              } else {
-                                tempCats.add(c);
-                              }
-                            });
-                          },
-                          child: _buildSelectableChip(c, selected, color),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              provider.resetFilters();
-                              for (final t in tempTypes) {
-                                provider.toggleType(t);
-                              }
-                              for (final g in tempGens) {
-                                provider.toggleGeneration(g);
-                              }
-                              for (final c in tempCats) {
-                                provider.toggleCategory(c);
-                              }
-                              Navigator.of(ctx).pop();
-                            },
-                            child: const Text('应用'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              setState(() {
-                                tempTypes.clear();
-                                tempGens.clear();
-                                tempCats.clear();
-                              });
-                              provider.resetFilters();
-                            },
-                            child: const Text('重置'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
   }
 
   Widget _buildSelectableChip(String text, bool selected, Color bgColor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.symmetric(horizontal: selected ? 12 : 10, vertical: 6),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
+        boxShadow: selected
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [],
       ),
       child: Text(
         text,

@@ -79,12 +79,14 @@ class AbilityProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 切换世代选择
+  /// 切换世代选择（单选，可取消）
   void toggleGeneration(String generation) {
     if (_selectedGenerations.contains(generation)) {
       _selectedGenerations.remove(generation);
     } else {
-      _selectedGenerations.add(generation);
+      _selectedGenerations
+        ..clear()
+        ..add(generation);
     }
     _applyFilters();
   }

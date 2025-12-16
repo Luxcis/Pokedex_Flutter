@@ -60,10 +60,6 @@ class PokemonProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 应用筛选逻辑：同时考虑搜索、属性、世代
-  /// 规则：
-  /// - 属性：若选择不为空，宝可梦需至少包含一个被选属性
-  /// - 世代：若选择不为空，宝可梦的世代需命中其一
   void _applyFilters() {
     Iterable<PokemonModel> base = _allPokemonList;
 
@@ -78,7 +74,7 @@ class PokemonProvider extends ChangeNotifier {
     }
 
     if (_selectedTypes.isNotEmpty) {
-      base = base.where((p) => p.types.any(_selectedTypes.contains));
+      base = base.where((p) => _selectedTypes.every(p.types.contains));
     }
 
     if (_selectedGenerations.isNotEmpty) {
@@ -89,22 +85,28 @@ class PokemonProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 切换属性选择
+  /// 切换属性选择（最多2个，超出移除最早）
   void toggleType(String type) {
     if (_selectedTypes.contains(type)) {
       _selectedTypes.remove(type);
     } else {
+      if (_selectedTypes.length >= 2) {
+        final String first = _selectedTypes.first;
+        _selectedTypes.remove(first);
+      }
       _selectedTypes.add(type);
     }
     _applyFilters();
   }
 
-  /// 切换世代选择
+  /// 切换世代选择（单选，可取消）
   void toggleGeneration(String generation) {
     if (_selectedGenerations.contains(generation)) {
       _selectedGenerations.remove(generation);
     } else {
-      _selectedGenerations.add(generation);
+      _selectedGenerations
+        ..clear()
+        ..add(generation);
     }
     _applyFilters();
   }

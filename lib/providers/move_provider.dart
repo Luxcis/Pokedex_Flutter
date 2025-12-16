@@ -90,32 +90,40 @@ class MoveProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 切换属性选择
+  /// 切换属性选择（最多2个，超出移除最早）
   void toggleType(String type) {
     if (_selectedTypes.contains(type)) {
       _selectedTypes.remove(type);
     } else {
+      if (_selectedTypes.length >= 2) {
+        final String first = _selectedTypes.first;
+        _selectedTypes.remove(first);
+      }
       _selectedTypes.add(type);
     }
     _applyFilters();
   }
 
-  /// 切换世代选择
+  /// 切换世代选择（单选，可取消）
   void toggleGeneration(String generation) {
     if (_selectedGenerations.contains(generation)) {
       _selectedGenerations.remove(generation);
     } else {
-      _selectedGenerations.add(generation);
+      _selectedGenerations
+        ..clear()
+        ..add(generation);
     }
     _applyFilters();
   }
 
-  /// 切换类别选择
+  /// 切换类别选择（单选，可取消）
   void toggleCategory(String category) {
     if (_selectedCategories.contains(category)) {
       _selectedCategories.remove(category);
     } else {
-      _selectedCategories.add(category);
+      _selectedCategories
+        ..clear()
+        ..add(category);
     }
     _applyFilters();
   }
