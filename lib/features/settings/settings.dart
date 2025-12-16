@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/features/settings/language_settings.dart';
-import 'package:pokedex/l10n/app_localizations.dart';
 import 'package:pokedex/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -10,36 +8,27 @@ class SettingsPage extends StatefulWidget {
   @override
   State createState() => _SettingsPageState();
 }
+
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final languageSettingsItem = _SettingItem(
-      title: l10n.languagesSettingTitle,
-      icon: Icons.language,
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const LanguageSettings(),
-        ));
-      },
-    );
     final themeDropdownItems = [
       DropdownMenuItem(
         value: ThemeMode.light,
-        child: Text(l10n.lightThemeOption),
+        child: Text('浅色'),
       ),
       DropdownMenuItem(
         value: ThemeMode.dark,
-        child: Text(l10n.darkThemeOption),
+        child: Text('深色'),
       ),
       DropdownMenuItem(
         value: ThemeMode.system,
-        child: Text(l10n.systemThemeOption),
+        child: Text('跟随系统'),
       ),
     ];
     final themeSettingsItem = _SettingItem(
-      title: l10n.applicationThemeSettingTitle,
+      title: '应用主题',
       icon: Icons.brightness_4,
       editor: DropdownButton(
         value: themeProvider.themeMode,
@@ -50,17 +39,11 @@ class _SettingsPageState extends State<SettingsPage> {
         },
       ),
       onTap: null,
+      description: null,
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settingsAppBarTitle)
-      ),
-      body: ListView(
-        children: [
-          themeSettingsItem,
-          languageSettingsItem,
-        ],
-      ),
+      appBar: AppBar(title: Text('设置')),
+      body: ListView(children: [themeSettingsItem]),
     );
   }
 }
@@ -86,9 +69,7 @@ class _SettingItem extends StatelessWidget {
       onTap: onTap,
       child: ListTile(
         title: Text(title, style: TextStyle(fontSize: 18)),
-        subtitle: description != null
-          ? Text(description!)
-          : null,
+        subtitle: description != null ? Text(description!) : null,
         leading: Icon(icon),
         trailing: editor,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
