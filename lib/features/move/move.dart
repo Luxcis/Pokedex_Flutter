@@ -31,8 +31,11 @@ class _MovePageState extends State<MovePage> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).colorScheme.surface;
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
@@ -67,7 +70,10 @@ class _MovePageState extends State<MovePage> {
           ),
         ),
       ),
-      body: Consumer<MoveProvider>(
+      body: Column(
+        children: [
+          Expanded(
+            child: Consumer<MoveProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -120,39 +126,33 @@ class _MovePageState extends State<MovePage> {
             },
           );
         },
+            ),
+          ),
+          Container(
+            height: 1,
+            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildFilterButton(VoidCallback onTap) {
-    final bgColor = Theme.of(context).colorScheme.surfaceContainerHighest;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: 40,
-          height: 40,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: const Icon(Icons.filter_list, color: Colors.grey),
-        ),
+    return IconButton(
+      onPressed: onTap,
+      icon: const Icon(
+        Icons.filter_list,
+        color: Colors.black87,
+      ),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(
+        minWidth: 40,
+        minHeight: 40,
       ),
     );
   }
 
-  /// 弹出招式筛选面板：包含属性、世代、类别
+  // 弹出招式筛选面板：包含属性、世代、类别
   void _showMoveFilterDialog() {
     final provider = context.read<MoveProvider>();
     final Set<String> tempTypes = {...provider.selectedTypes};

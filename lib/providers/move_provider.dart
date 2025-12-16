@@ -25,7 +25,7 @@ class MoveProvider extends ChangeNotifier {
   Set<String> get selectedGenerations => _selectedGenerations;
   Set<String> get selectedCategories => _selectedCategories;
 
-  /// 加载招式数据
+  // 加载招式数据
   Future<void> loadMoveData() async {
     _isLoading = true;
     _errorMessage = null;
@@ -49,7 +49,7 @@ class MoveProvider extends ChangeNotifier {
     }
   }
 
-  /// 搜索招式
+  // 搜索招式
   void searchMove(String query) {
     _searchQuery = query.trim().toLowerCase();
     _applyFilters();
@@ -60,7 +60,7 @@ class MoveProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 应用筛选逻辑：同时考虑搜索、属性、世代、类别
+  // 应用筛选逻辑：同时考虑搜索、属性、世代、类别
   void _applyFilters() {
     Iterable<MoveModel> base = _allMoveList;
 
@@ -90,7 +90,7 @@ class MoveProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 切换属性选择（最多2个，超出移除最早）
+  // 切换属性选择（最多2个，超出移除最早）
   void toggleType(String type) {
     if (_selectedTypes.contains(type)) {
       _selectedTypes.remove(type);
@@ -104,7 +104,7 @@ class MoveProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 切换世代选择（单选，可取消）
+  // 切换世代选择（单选，可取消）
   void toggleGeneration(String generation) {
     if (_selectedGenerations.contains(generation)) {
       _selectedGenerations.remove(generation);
@@ -116,7 +116,7 @@ class MoveProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 切换类别选择（单选，可取消）
+  // 切换类别选择（单选，可取消）
   void toggleCategory(String category) {
     if (_selectedCategories.contains(category)) {
       _selectedCategories.remove(category);
@@ -128,7 +128,7 @@ class MoveProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 重置筛选
+  // 重置筛选
   void resetFilters() {
     _selectedTypes.clear();
     _selectedGenerations.clear();

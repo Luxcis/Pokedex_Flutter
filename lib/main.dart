@@ -28,11 +28,39 @@ class _MyAppState extends State<MyApp> {
               seedColor: defaultColorTheme,
               brightness: Brightness.light,
             ),
+            navigationBarTheme: NavigationBarThemeData(
+              backgroundColor:
+                  ColorScheme.fromSeed(
+                    seedColor: defaultColorTheme,
+                    brightness: Brightness.light,
+                  ).surface,
+            ),
+            appBarTheme: AppBarThemeData(
+              backgroundColor:
+                  ColorScheme.fromSeed(
+                    seedColor: defaultColorTheme,
+                    brightness: Brightness.light,
+                  ).surface,
+            ),
           ),
           darkTheme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: defaultColorTheme,
               brightness: Brightness.dark,
+            ),
+            navigationBarTheme: NavigationBarThemeData(
+              backgroundColor:
+                  ColorScheme.fromSeed(
+                    seedColor: defaultColorTheme,
+                    brightness: Brightness.dark,
+                  ).surface,
+            ),
+            appBarTheme: AppBarThemeData(
+              backgroundColor:
+              ColorScheme.fromSeed(
+                seedColor: defaultColorTheme,
+                brightness: Brightness.light,
+              ).surface,
             ),
           ),
           themeMode: themeProvider.themeMode,

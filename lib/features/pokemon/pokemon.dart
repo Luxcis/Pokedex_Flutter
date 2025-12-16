@@ -32,8 +32,11 @@ class _PokemonPageState extends State<PokemonPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).colorScheme.surface;
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
@@ -69,7 +72,10 @@ class _PokemonPageState extends State<PokemonPage> {
         ),
         actions: const [],
       ),
-      body: Consumer<PokemonProvider>(
+      body: Column(
+        children: [
+          Expanded(
+            child: Consumer<PokemonProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
             return const Center(
@@ -137,40 +143,34 @@ class _PokemonPageState extends State<PokemonPage> {
             },
           );
         },
-      ),
-    );
-  }
-
-  /// 构建筛选按钮：40x40，内边距8，圆角与阴影与现有风格一致
-  Widget _buildFilterButton(VoidCallback onTap) {
-    final bgColor = Theme.of(context).colorScheme.surfaceContainerHighest;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: 40,
-          height: 40,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            ),
           ),
-          child: const Icon(Icons.filter_list, color: Colors.grey),
-        ),
+          Container(
+            height: 1,
+            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+        ],
       ),
     );
   }
 
-  /// 弹出宝可梦筛选面板：包含属性与世代，支持多选
+  // 构建筛选按钮：仅显示图标
+  Widget _buildFilterButton(VoidCallback onTap) {
+    return IconButton(
+      onPressed: onTap,
+      icon: const Icon(
+        Icons.filter_list,
+        color: Colors.black87,
+      ),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(
+        minWidth: 40,
+        minHeight: 40,
+      ),
+    );
+  }
+
+  // 弹出宝可梦筛选面板：包含属性与世代，支持多选
   void _showPokemonFilterDialog() {
     final provider = context.read<PokemonProvider>();
     final Set<String> tempTypes = {...provider.selectedTypes};
@@ -322,7 +322,7 @@ class _PokemonPageState extends State<PokemonPage> {
     );
   }
 
-  /// 通用可选标签：默认灰色(#E0E0E0)，选中按照规则着色
+  // 通用可选标签：默认灰色(#E0E0E0)，选中按照规则着色
   Widget _buildSelectableChip(String text, bool selected, Color bgColor) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),

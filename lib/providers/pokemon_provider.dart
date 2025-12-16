@@ -48,13 +48,13 @@ class PokemonProvider extends ChangeNotifier {
     }
   }
 
-  /// 搜索宝可梦
+  // 搜索宝可梦
   void searchPokemon(String query) {
     _searchQuery = query.trim().toLowerCase();
     _applyFilters();
   }
 
-  /// 清空搜索
+  // 清空搜索
   void clearSearch() {
     _searchQuery = '';
     _applyFilters();
@@ -85,7 +85,7 @@ class PokemonProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 切换属性选择（最多2个，超出移除最早）
+  // 切换属性选择（最多2个，超出移除最早）
   void toggleType(String type) {
     if (_selectedTypes.contains(type)) {
       _selectedTypes.remove(type);
@@ -99,7 +99,7 @@ class PokemonProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 切换世代选择（单选，可取消）
+  // 切换世代选择（单选，可取消）
   void toggleGeneration(String generation) {
     if (_selectedGenerations.contains(generation)) {
       _selectedGenerations.remove(generation);
@@ -111,7 +111,7 @@ class PokemonProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 重置筛选
+  // 重置筛选
   void resetFilters() {
     _selectedTypes.clear();
     _selectedGenerations.clear();

@@ -21,7 +21,7 @@ class AbilityProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   Set<String> get selectedGenerations => _selectedGenerations;
 
-  /// 加载特性数据
+  // 加载特性数据
   Future<void> loadAbilityData() async {
     _isLoading = true;
     _errorMessage = null;
@@ -46,7 +46,7 @@ class AbilityProvider extends ChangeNotifier {
     }
   }
 
-  /// 搜索特性
+  // 搜索特性
   void searchAbility(String query) {
     _searchQuery = query.trim().toLowerCase();
     _applyFilters();
@@ -57,7 +57,7 @@ class AbilityProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 应用筛选逻辑：同时考虑搜索与世代
+  // 应用筛选逻辑：同时考虑搜索与世代
   void _applyFilters() {
     Iterable<AbilityModel> base = _allAbilityList;
 
@@ -79,7 +79,7 @@ class AbilityProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 切换世代选择（单选，可取消）
+  // 切换世代选择（单选，可取消）
   void toggleGeneration(String generation) {
     if (_selectedGenerations.contains(generation)) {
       _selectedGenerations.remove(generation);
@@ -91,7 +91,7 @@ class AbilityProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  /// 重置筛选
+  // 重置筛选
   void resetFilters() {
     _selectedGenerations.clear();
     _applyFilters();
