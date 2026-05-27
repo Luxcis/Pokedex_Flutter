@@ -30,8 +30,9 @@ class PokemonProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/pokemon_full_list.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/pokemon_full_list.json',
+      );
       final List<dynamic> jsonList = json.decode(jsonString);
 
       _allPokemonList =

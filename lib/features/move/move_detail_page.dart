@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/features/pokemon/pokemon_detail_page.dart';
 import 'package:pokedex/features/pokemon/widgets/pokemon_sprite_icon.dart';
 import 'package:pokedex/models/move_detail_model.dart';
 import 'package:pokedex/providers/move_provider.dart';
@@ -64,10 +65,7 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: Text(widget.moveName),
-      ),
+      appBar: AppBar(scrolledUnderElevation: 0, title: Text(widget.moveName)),
       body: _buildBody(),
     );
   }
@@ -90,10 +88,7 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadDetail,
-              child: const Text('重试'),
-            ),
+            ElevatedButton(onPressed: _loadDetail, child: const Text('重试')),
           ],
         ),
       );
@@ -136,10 +131,7 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
         const SizedBox(height: 4),
         Text(
           '${detail.nameJp}  ${detail.nameEn}',
-          style: TextStyle(
-            fontSize: 14,
-            color: colorScheme.onSurfaceVariant,
-          ),
+          style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 8),
         _buildInfoRow('引入世代', detail.generation),
@@ -225,10 +217,7 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
           width: 72,
           child: Text(
             label,
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
         ),
         Expanded(
@@ -315,29 +304,29 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: detail.info.map(
-              (info) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '• ',
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    Expanded(
-                      child: Text(
-                        info,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colorScheme.onSurfaceVariant,
+            children:
+                detail.info
+                    .map(
+                      (info) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('• ', style: TextStyle(fontSize: 13)),
+                            Expanded(
+                              child: Text(
+                                info,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ).toList(),
+                    )
+                    .toList(),
           ),
         ),
       ],
@@ -346,7 +335,8 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
 
   Widget _buildPokemonListSection(MoveDetailModel detail) {
     final pokemon = detail.pokemon;
-    final hasAny = pokemon.level.isNotEmpty ||
+    final hasAny =
+        pokemon.level.isNotEmpty ||
         pokemon.machine.isNotEmpty ||
         pokemon.egg.isNotEmpty ||
         pokemon.tutor.isNotEmpty;
@@ -443,61 +433,72 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
           types = List<String>.from(snapshot.data![1] as List<dynamic>);
         }
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                if (iconPos != null && iconPos.isNotEmpty)
-                  PokemonSpriteIcon(
-                    iconPosition: iconPos,
-                    size: 56,
-                  )
-                else
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: Icon(
-                      Icons.catching_pokemon,
-                      size: 32,
-                      color: Colors.grey[400],
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => PokemonDetailPage(
+                      pokemonIndex: pokemon.index,
+                      pokemonName: pokemon.name,
+                    ),
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  if (iconPos != null && iconPos.isNotEmpty)
+                    PokemonSpriteIcon(iconPosition: iconPos, size: 56)
+                  else
+                    SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: Icon(
+                        Icons.catching_pokemon,
+                        size: 32,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          pokemon.name,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        if (types.isNotEmpty)
+                          Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
+                            children:
+                                types.map((t) => _buildTypeChip(t)).toList(),
+                          ),
+                      ],
                     ),
                   ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        pokemon.name,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      if (types.isNotEmpty)
-                        Wrap(
-                          spacing: 4,
-                          runSpacing: 4,
-                          children: types
-                              .map((t) => _buildTypeChip(t))
-                              .toList(),
-                        ),
-                    ],
+                  const SizedBox(width: 8),
+                  Text(
+                    '#${pokemon.index}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'No.${pokemon.index}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

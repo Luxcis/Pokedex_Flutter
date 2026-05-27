@@ -27,8 +27,9 @@ class FusionProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/pokemon_fusion_data.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/pokemon_fusion_data.json',
+      );
       final List<dynamic> jsonList = json.decode(jsonString);
 
       _allPokemonList =
@@ -90,10 +91,13 @@ class FusionProvider extends ChangeNotifier {
     }
 
     int fusedHp = ((head.hp * 2 / 3) + (body.hp * 1 / 3)).round();
-    int fusedSpAttack = ((head.spAttack * 2 / 3) + (body.spAttack * 1 / 3)).round();
-    int fusedSpDefense = ((head.spDefense * 2 / 3) + (body.spDefense * 1 / 3)).round();
+    int fusedSpAttack =
+        ((head.spAttack * 2 / 3) + (body.spAttack * 1 / 3)).round();
+    int fusedSpDefense =
+        ((head.spDefense * 2 / 3) + (body.spDefense * 1 / 3)).round();
     int fusedAttack = ((body.attack * 2 / 3) + (head.attack * 1 / 3)).round();
-    int fusedDefense = ((body.defense * 2 / 3) + (head.defense * 1 / 3)).round();
+    int fusedDefense =
+        ((body.defense * 2 / 3) + (head.defense * 1 / 3)).round();
     int fusedSpeed = ((body.speed * 2 / 3) + (head.speed * 1 / 3)).round();
 
     _fusionResult = FusionResult(

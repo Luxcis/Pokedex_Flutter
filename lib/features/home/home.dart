@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:pokedex/features/ability/ability.dart';
 import 'package:pokedex/features/effect/effect.dart';
 import 'package:pokedex/features/fusion/fusion.dart';
 import 'package:pokedex/features/move/move.dart';
 import 'package:pokedex/features/pokemon/pokemon.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -95,10 +95,7 @@ class _HomePageState extends State<HomePage> {
         opacity: _pageOpacity,
         duration: const Duration(milliseconds: 130),
         curve: Curves.easeInOut,
-        child: IndexedStack(
-          index: currentPageIndex,
-          children: _pages,
-        ),
+        child: IndexedStack(index: currentPageIndex, children: _pages),
       ),
     );
   }
@@ -124,10 +121,10 @@ class _HomePageState extends State<HomePage> {
             child: Stack(
               children: [
                 AnimatedPositioned(
-                  duration:
-                      const Duration(milliseconds: _navAnimationMs),
+                  duration: const Duration(milliseconds: _navAnimationMs),
                   curve: Curves.easeInOut,
-                  left: currentPageIndex * itemWidth +
+                  left:
+                      currentPageIndex * itemWidth +
                       (itemWidth - indicatorWidth) / 2,
                   top: 8,
                   child: Container(
@@ -151,40 +148,43 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             IconTheme(
                               data: IconThemeData(
-                                color: isSelected
-                                    ? colorScheme.onSecondaryContainer
-                                    : colorScheme.onSurfaceVariant,
+                                color:
+                                    isSelected
+                                        ? colorScheme.onSecondaryContainer
+                                        : colorScheme.onSurfaceVariant,
                                 size: 24,
                               ),
-                              child: isSelected
-                                  ? _navItems[index].selectedIcon
-                                  : _navItems[index].icon,
+                              child:
+                                  isSelected
+                                      ? _navItems[index].selectedIcon
+                                      : _navItems[index].icon,
                             ),
                             AnimatedSize(
                               duration: const Duration(
-                                  milliseconds: _navAnimationMs),
+                                milliseconds: _navAnimationMs,
+                              ),
                               curve: Curves.easeInOut,
                               alignment: Alignment.topCenter,
                               child: SizedBox(
                                 height: isSelected ? 24.0 : 0.0,
                                 child: AnimatedOpacity(
                                   duration: const Duration(
-                                      milliseconds: _navAnimationMs),
+                                    milliseconds: _navAnimationMs,
+                                  ),
                                   curve: Curves.easeInOut,
                                   opacity: isSelected ? 1.0 : 0.0,
                                   child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 8),
+                                    padding: const EdgeInsets.only(top: 8),
                                     child: Text(
                                       _navItems[index].label,
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color: isSelected
-                                            ? colorScheme
-                                                .onSecondaryContainer
-                                            : colorScheme
-                                                .onSurfaceVariant,
+                                        color:
+                                            isSelected
+                                                ? colorScheme
+                                                    .onSecondaryContainer
+                                                : colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   ),

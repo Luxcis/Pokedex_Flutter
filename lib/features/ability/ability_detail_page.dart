@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/features/pokemon/pokemon_detail_page.dart';
 import 'package:pokedex/features/pokemon/widgets/pokemon_sprite_icon.dart';
 import 'package:pokedex/models/ability_detail_model.dart';
 import 'package:pokedex/providers/ability_provider.dart';
@@ -89,10 +90,7 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadDetail,
-              child: const Text('重试'),
-            ),
+            ElevatedButton(onPressed: _loadDetail, child: const Text('重试')),
           ],
         ),
       );
@@ -166,10 +164,7 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
           width: 72,
           child: Text(
             label,
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
         ),
         Expanded(
@@ -229,29 +224,29 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: detail.info.map(
-              (info) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '• ',
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    Expanded(
-                      child: Text(
-                        info,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colorScheme.onSurfaceVariant,
+            children:
+                detail.info
+                    .map(
+                      (info) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('• ', style: TextStyle(fontSize: 13)),
+                            Expanded(
+                              child: Text(
+                                info,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ).toList(),
+                    )
+                    .toList(),
           ),
         ),
       ],
@@ -290,72 +285,88 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
   Widget _buildPokemonCard(AbilityPokemon pokemon, String abilityName) {
     final slotText = _getAbilitySlot(pokemon, abilityName);
     return FutureBuilder<String?>(
-      future: context.read<AbilityProvider>().getPokemonIconPosition(pokemon.index),
+      future: context.read<AbilityProvider>().getPokemonIconPosition(
+        pokemon.index,
+      ),
       builder: (context, snapshot) {
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                if (snapshot.hasData && snapshot.data != null)
-                  PokemonSpriteIcon(
-                    iconPosition: snapshot.data!,
-                    size: 56,
-                  )
-                else
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: Icon(
-                      Icons.catching_pokemon,
-                      size: 32,
-                      color: Colors.grey[400],
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => PokemonDetailPage(
+                      pokemonIndex: pokemon.index,
+                      pokemonName: pokemon.name,
                     ),
-                  ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        pokemon.name,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  if (snapshot.hasData && snapshot.data != null)
+                    PokemonSpriteIcon(iconPosition: snapshot.data!, size: 56)
+                  else
+                    SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: Icon(
+                        Icons.catching_pokemon,
+                        size: 32,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          pokemon.name,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Wrap(
-                        spacing: 4,
-                        runSpacing: 4,
-                        children: pokemon.types
-                            .map((t) => _buildTypeChip(t))
-                            .toList(),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    slotText,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSecondaryContainer,
-                      fontWeight: FontWeight.w500,
+                        const SizedBox(height: 4),
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children:
+                              pokemon.types
+                                  .map((t) => _buildTypeChip(t))
+                                  .toList(),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      slotText,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -369,10 +380,12 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
         pokemon.hiddenAbility == abilityName) {
       return '隐藏特性';
     }
-    if (pokemon.firstAbility.isNotEmpty && pokemon.firstAbility == abilityName) {
+    if (pokemon.firstAbility.isNotEmpty &&
+        pokemon.firstAbility == abilityName) {
       return '第一特性';
     }
-    if (pokemon.secondAbility.isNotEmpty && pokemon.secondAbility == abilityName) {
+    if (pokemon.secondAbility.isNotEmpty &&
+        pokemon.secondAbility == abilityName) {
       return '第二特性';
     }
     return '特性';

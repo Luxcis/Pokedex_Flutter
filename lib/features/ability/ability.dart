@@ -73,63 +73,76 @@ class _AbilityPageState extends State<AbilityPage> {
         children: [
           Expanded(
             child: Consumer<AbilityProvider>(
-        builder: (context, provider, child) {
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+              builder: (context, provider, child) {
+                if (provider.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (provider.errorMessage != null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    provider.errorMessage!,
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => provider.loadAbilityData(),
-                    child: const Text('重试'),
-                  ),
-                ],
-              ),
-            );
-          }
+                if (provider.errorMessage != null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          provider.errorMessage!,
+                          style: const TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => provider.loadAbilityData(),
+                          child: const Text('重试'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-          if (provider.filteredAbilityList.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text(
-                    provider.searchQuery.isEmpty ? '暂无特性数据' : '未找到匹配的特性',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            );
-          }
+                if (provider.filteredAbilityList.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          provider.searchQuery.isEmpty ? '暂无特性数据' : '未找到匹配的特性',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-          return ListView.builder(
-            itemCount: provider.filteredAbilityList.length,
-            padding: const EdgeInsets.all(8),
-            itemBuilder: (context, index) {
-              final ability = provider.filteredAbilityList[index];
-              return _buildAbilityCard(ability);
-            },
-          );
-        },
+                return ListView.builder(
+                  itemCount: provider.filteredAbilityList.length,
+                  padding: const EdgeInsets.all(8),
+                  itemBuilder: (context, index) {
+                    final ability = provider.filteredAbilityList[index];
+                    return _buildAbilityCard(ability);
+                  },
+                );
+              },
             ),
           ),
           Container(
             height: 1,
-            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+            color: Theme.of(
+              context,
+            ).colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
         ],
       ),
@@ -139,15 +152,9 @@ class _AbilityPageState extends State<AbilityPage> {
   Widget _buildFilterButton(VoidCallback onTap) {
     return IconButton(
       onPressed: onTap,
-      icon: const Icon(
-        Icons.filter_list,
-        color: Colors.black87,
-      ),
+      icon: const Icon(Icons.filter_list, color: Colors.black87),
       padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(
-        minWidth: 40,
-        minHeight: 40,
-      ),
+      constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
     );
   }
 
@@ -156,10 +163,9 @@ class _AbilityPageState extends State<AbilityPage> {
     final provider = context.read<AbilityProvider>();
     final Set<String> tempGens = {...provider.selectedGenerations};
 
-    final allGens = {
-      for (final a in provider.allAbilityList) a.generation
-    }.toList()
-      ..sort();
+    final allGens =
+        {for (final a in provider.allAbilityList) a.generation}.toList()
+          ..sort();
 
     showDialog(
       context: context,
@@ -167,7 +173,10 @@ class _AbilityPageState extends State<AbilityPage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return Dialog(
-              insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 24,
+              ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 280),
                 child: Padding(
@@ -181,7 +190,10 @@ class _AbilityPageState extends State<AbilityPage> {
                           const Expanded(
                             child: Text(
                               '筛选',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                           IconButton(
@@ -191,33 +203,47 @@ class _AbilityPageState extends State<AbilityPage> {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      const Text('世代', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                      const Text(
+                        '世代',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: allGens.map((g) {
-                          final selected = tempGens.contains(g);
-                          final color = selected ? Colors.black : const Color(0xFFE0E0E0);
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                setDialogState(() {
-                                  if (selected) {
-                                    tempGens.remove(g);
-                                  } else {
-                                    tempGens
-                                      ..clear()
-                                      ..add(g);
-                                  }
-                                });
-                              },
-                              borderRadius: BorderRadius.circular(12),
-                              child: _buildSelectableChip(g, selected, color),
-                            ),
-                          );
-                        }).toList(),
+                        children:
+                            allGens.map((g) {
+                              final selected = tempGens.contains(g);
+                              final color =
+                                  selected
+                                      ? Colors.black
+                                      : const Color(0xFFE0E0E0);
+                              return Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    setDialogState(() {
+                                      if (selected) {
+                                        tempGens.remove(g);
+                                      } else {
+                                        tempGens
+                                          ..clear()
+                                          ..add(g);
+                                      }
+                                    });
+                                  },
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: _buildSelectableChip(
+                                    g,
+                                    selected,
+                                    color,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                       ),
                       const SizedBox(height: 20),
                       Row(
@@ -263,19 +289,23 @@ class _AbilityPageState extends State<AbilityPage> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
-      padding: EdgeInsets.symmetric(horizontal: selected ? 12 : 10, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: selected ? 12 : 10,
+        vertical: 6,
+      ),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: selected
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [],
+        boxShadow:
+            selected
+                ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+                : [],
       ),
       child: Text(
         text,
@@ -296,10 +326,11 @@ class _AbilityPageState extends State<AbilityPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => AbilityDetailPage(
-                abilityIndex: ability.index,
-                abilityName: ability.name,
-              ),
+              builder:
+                  (_) => AbilityDetailPage(
+                    abilityIndex: ability.index,
+                    abilityName: ability.name,
+                  ),
             ),
           );
         },

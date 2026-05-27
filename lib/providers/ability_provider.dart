@@ -31,8 +31,9 @@ class AbilityProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/ability_list.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/ability_list.json',
+      );
       final List<dynamic> jsonList = json.decode(jsonString);
 
       _allAbilityList =
@@ -99,11 +100,17 @@ class AbilityProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  Future<AbilityDetailModel> loadAbilityDetail(
-      String index, String name) async {
+  String? getAbilityIndex(String name) {
+    final match = _allAbilityList.where((a) => a.name == name);
+    return match.isNotEmpty ? match.first.index : null;
+  }
+
+  Future<AbilityDetailModel> loadAbilityDetail(String index,
+      String name,) async {
     try {
-      final String jsonString = await rootBundle
-          .loadString('assets/data/ability/$index-$name.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/ability/$index-$name.json',
+      );
       final Map<String, dynamic> json =
           jsonDecode(jsonString) as Map<String, dynamic>;
       return AbilityDetailModel.fromJson(json);
@@ -122,8 +129,9 @@ class AbilityProvider extends ChangeNotifier {
 
   Future<void> _loadPokemonIconMap() async {
     try {
-      final String jsonString = await rootBundle
-          .loadString('assets/data/pokemon_full_list.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/pokemon_full_list.json',
+      );
       final List<dynamic> jsonList = jsonDecode(jsonString);
       for (final entry in jsonList) {
         final idx = entry['index'] as String? ?? '';

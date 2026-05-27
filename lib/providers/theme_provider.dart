@@ -21,7 +21,9 @@ class ThemeProvider with ChangeNotifier {
   void _loadThemePreference() async {
     final prefs = await SharedPreferences.getInstance();
     final int? themeIndex = prefs.getInt(_themeModeKey);
-    if (themeIndex != null && themeIndex >= 0 && themeIndex < ThemeMode.values.length) {
+    if (themeIndex != null &&
+        themeIndex >= 0 &&
+        themeIndex < ThemeMode.values.length) {
       _themeMode = ThemeMode.values[themeIndex];
       notifyListeners();
     } else {
@@ -30,6 +32,7 @@ class ThemeProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
   void _saveThemePreference(ThemeMode option) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt(_themeModeKey, option.index);

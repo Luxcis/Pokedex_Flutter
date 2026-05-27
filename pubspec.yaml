@@ -62,7 +62,11 @@ flutter:
     - assets/data/
     - assets/data/ability/
     - assets/data/move/
+    - assets/data/pokemon/
     - assets/data/images/
+    - assets/data/images/home/
+    - assets/data/images/dream/
+    - assets/data/images/official/
     - assets/icon/
 
   # The following line ensures that the Material Icons font is

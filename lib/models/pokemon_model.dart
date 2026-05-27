@@ -48,14 +48,10 @@ class PokemonMeta {
   PokemonMeta({required this.iconPosition});
 
   factory PokemonMeta.fromJson(Map<String, dynamic> json) {
-    return PokemonMeta(
-      iconPosition: json['icon_position'] ?? '0px 0px',
-    );
+    return PokemonMeta(iconPosition: json['icon_position'] ?? '0px 0px');
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'icon_position': iconPosition,
-    };
+    return {'icon_position': iconPosition};
   }
 }

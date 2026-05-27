@@ -50,7 +50,8 @@ class MoveDetailModel {
       info: List<String>.from(json['info'] ?? []),
       range: json['range'] ?? '',
       pokemon: MovePokemonGroups.fromJson(
-          json['pokemon'] as Map<String, dynamic>? ?? {}),
+        json['pokemon'] as Map<String, dynamic>? ?? {},
+      ),
     );
   }
 
@@ -90,19 +91,23 @@ class MovePokemonGroups {
 
   factory MovePokemonGroups.fromJson(Map<String, dynamic> json) {
     return MovePokemonGroups(
-      level: (json['level'] as List<dynamic>?)
+      level:
+          (json['level'] as List<dynamic>?)
               ?.map((p) => MovePokemon.fromJson(p))
               .toList() ??
           [],
-      machine: (json['machine'] as List<dynamic>?)
+      machine:
+          (json['machine'] as List<dynamic>?)
               ?.map((p) => MovePokemon.fromJson(p))
               .toList() ??
           [],
-      egg: (json['egg'] as List<dynamic>?)
+      egg:
+          (json['egg'] as List<dynamic>?)
               ?.map((p) => MovePokemon.fromJson(p))
               .toList() ??
           [],
-      tutor: (json['tutor'] as List<dynamic>?)
+      tutor:
+          (json['tutor'] as List<dynamic>?)
               ?.map((p) => MovePokemon.fromJson(p))
               .toList() ??
           [],
@@ -123,22 +128,13 @@ class MovePokemon {
   final String index;
   final String name;
 
-  const MovePokemon({
-    required this.index,
-    required this.name,
-  });
+  const MovePokemon({required this.index, required this.name});
 
   factory MovePokemon.fromJson(Map<String, dynamic> json) {
-    return MovePokemon(
-      index: json['index'] ?? '',
-      name: json['name'] ?? '',
-    );
+    return MovePokemon(index: json['index'] ?? '', name: json['name'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'index': index,
-      'name': name,
-    };
+    return {'index': index, 'name': name};
   }
 }

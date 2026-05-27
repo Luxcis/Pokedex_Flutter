@@ -37,7 +37,8 @@ class AbilityDetailModel {
       info: List<String>.from(json['info'] ?? []),
       commonCount: json['common_count'] ?? 0,
       hiddenCount: json['hidden_count'] ?? 0,
-      pokemon: (json['pokemon'] as List<dynamic>?)
+      pokemon:
+          (json['pokemon'] as List<dynamic>?)
               ?.map((p) => AbilityPokemon.fromJson(p))
               .toList() ??
           [],

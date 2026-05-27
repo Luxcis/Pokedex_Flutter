@@ -57,19 +57,29 @@ class _EffectPageState extends State<EffectPage> {
         : Colors.grey.shade700;
   }
 
-  Color _getCardColor(Color typeColor, double multiplier, Brightness brightness) {
+  Color _getCardColor(
+    Color typeColor,
+    double multiplier,
+    Brightness brightness,
+  ) {
     if (multiplier == 0) {
       return brightness == Brightness.dark
           ? Colors.grey.shade800
           : Colors.grey.shade100;
     }
     if (multiplier <= 0.5) {
-      return typeColor.withValues(alpha: brightness == Brightness.dark ? 0.2 : 0.08);
+      return typeColor.withValues(
+        alpha: brightness == Brightness.dark ? 0.2 : 0.08,
+      );
     }
     if (multiplier >= 2) {
-      return typeColor.withValues(alpha: brightness == Brightness.dark ? 0.35 : 0.18);
+      return typeColor.withValues(
+        alpha: brightness == Brightness.dark ? 0.35 : 0.18,
+      );
     }
-    return typeColor.withValues(alpha: brightness == Brightness.dark ? 0.15 : 0.06);
+    return typeColor.withValues(
+      alpha: brightness == Brightness.dark ? 0.15 : 0.06,
+    );
   }
 
   void _switchMode(EffectMode mode) {
@@ -134,18 +144,15 @@ class _EffectPageState extends State<EffectPage> {
       IconButton(
         icon: const Icon(Icons.settings),
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const SettingsPage()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
         },
       ),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('属性克制'),
-        actions: actions,
-      ),
+      appBar: AppBar(title: const Text('属性克制'), actions: actions),
       body: Column(
         children: [
           _buildModeSwitch(colorScheme),
@@ -231,9 +238,10 @@ class _EffectPageState extends State<EffectPage> {
             Icon(
               icon,
               size: 18,
-              color: selected
-                  ? colorScheme.onPrimaryContainer
-                  : colorScheme.onSurface.withValues(alpha: 0.6),
+              color:
+                  selected
+                      ? colorScheme.onPrimaryContainer
+                      : colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             const SizedBox(width: 6),
             Text(
@@ -241,9 +249,10 @@ class _EffectPageState extends State<EffectPage> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                color: selected
-                    ? colorScheme.onPrimaryContainer
-                    : colorScheme.onSurface.withValues(alpha: 0.6),
+                color:
+                    selected
+                        ? colorScheme.onPrimaryContainer
+                        : colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ],
@@ -254,9 +263,8 @@ class _EffectPageState extends State<EffectPage> {
 
   Widget _buildDefenseInputs(ColorScheme colorScheme, Brightness brightness) {
     final availableFor1 = _getAvailableTypes(null);
-    final availableFor2 = _defendType1 != null
-        ? _getAvailableTypes(_defendType1)
-        : <String>[];
+    final availableFor2 =
+        _defendType1 != null ? _getAvailableTypes(_defendType1) : <String>[];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,9 +285,10 @@ class _EffectPageState extends State<EffectPage> {
                 items: availableFor1,
                 hint: '选择属性 1',
                 onChange: _onDefendType1Changed,
-                typeColor: _defendType1 != null
-                    ? PokemonTypeColors.getTypeColor(_defendType1!)
-                    : null,
+                typeColor:
+                    _defendType1 != null
+                        ? PokemonTypeColors.getTypeColor(_defendType1!)
+                        : null,
                 colorScheme: colorScheme,
               ),
             ),
@@ -291,9 +300,10 @@ class _EffectPageState extends State<EffectPage> {
                 hint: _defendType1 != null ? '选择属性 2' : '请先选属性 1',
                 onChange: _onDefendType2Changed,
                 enabled: _defendType1 != null,
-                typeColor: _defendType2 != null
-                    ? PokemonTypeColors.getTypeColor(_defendType2!)
-                    : null,
+                typeColor:
+                    _defendType2 != null
+                        ? PokemonTypeColors.getTypeColor(_defendType2!)
+                        : null,
                 colorScheme: colorScheme,
               ),
             ),
@@ -334,9 +344,10 @@ class _EffectPageState extends State<EffectPage> {
             items: available,
             hint: '选择攻击属性',
             onChange: _onAttackTypeChanged,
-            typeColor: _attackType != null
-                ? PokemonTypeColors.getTypeColor(_attackType!)
-                : null,
+            typeColor:
+                _attackType != null
+                    ? PokemonTypeColors.getTypeColor(_attackType!)
+                    : null,
             colorScheme: colorScheme,
           ),
         ),
@@ -356,13 +367,12 @@ class _EffectPageState extends State<EffectPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: enabled
-            ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
-            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
+        color:
+            enabled
+                ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
+                : colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -375,8 +385,10 @@ class _EffectPageState extends State<EffectPage> {
             ),
           ),
           isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down,
-              color: colorScheme.onSurface.withValues(alpha: 0.5)),
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: colorScheme.onSurface.withValues(alpha: 0.5),
+          ),
           style: TextStyle(
             color: colorScheme.onSurface,
             fontSize: 14,
@@ -384,26 +396,27 @@ class _EffectPageState extends State<EffectPage> {
           ),
           dropdownColor: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          items: items.map((type) {
-            final color = PokemonTypeColors.getTypeColor(type);
-            return DropdownMenuItem(
-              value: type,
-              child: Row(
-                children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                    ),
+          items:
+              items.map((type) {
+                final color = PokemonTypeColors.getTypeColor(type);
+                return DropdownMenuItem(
+                  value: type,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(type),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text(type),
-                ],
-              ),
-            );
-          }).toList(),
+                );
+              }).toList(),
           onChanged: enabled ? onChange : null,
         ),
       ),
@@ -443,9 +456,12 @@ class _EffectPageState extends State<EffectPage> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: items
-                    .map<Widget>((item) => _buildResultChip(item, brightness))
-                    .toList(),
+                children:
+                    items
+                        .map<Widget>(
+                          (item) => _buildResultChip(item, brightness),
+                        )
+                        .toList(),
               ),
             ],
           ),
@@ -456,8 +472,10 @@ class _EffectPageState extends State<EffectPage> {
     return Column(children: sections);
   }
 
-  Widget _buildGroupHeader(
-      double multiplier, String label, Color color, int count) {
+  Widget _buildGroupHeader(double multiplier,
+      String label,
+      Color color,
+      int count,) {
     return Row(
       children: [
         Container(
@@ -489,7 +507,9 @@ class _EffectPageState extends State<EffectPage> {
           '$count种属性',
           style: TextStyle(
             fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.5),
           ),
         ),
       ],
@@ -527,10 +547,7 @@ class _EffectPageState extends State<EffectPage> {
           Container(
             width: 10,
             height: 10,
-            decoration: BoxDecoration(
-              color: typeColor,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: typeColor, shape: BoxShape.circle),
           ),
           const SizedBox(width: 6),
           Text(
@@ -553,17 +570,13 @@ class _EffectPageState extends State<EffectPage> {
       child: Column(
         children: [
           Icon(
-            _mode == EffectMode.defense
-                ? Icons.shield_outlined
-                : Icons.bolt,
+            _mode == EffectMode.defense ? Icons.shield_outlined : Icons.bolt,
             size: 48,
             color: colorScheme.onSurface.withValues(alpha: 0.25),
           ),
           const SizedBox(height: 12),
           Text(
-            _mode == EffectMode.defense
-                ? '请至少选择1个防御属性查看倍率'
-                : '请选择进攻属性查看倍率',
+            _mode == EffectMode.defense ? '请至少选择1个防御属性查看倍率' : '请选择进攻属性查看倍率',
             style: TextStyle(
               fontSize: 14,
               color: colorScheme.onSurface.withValues(alpha: 0.5),
@@ -573,5 +586,4 @@ class _EffectPageState extends State<EffectPage> {
       ),
     );
   }
-
 }

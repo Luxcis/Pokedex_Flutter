@@ -1,10 +1,10 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex/features/home/home.dart';
-import 'package:pokedex/providers/pokemon_provider.dart';
 import 'package:pokedex/providers/ability_provider.dart';
-import 'package:pokedex/providers/move_provider.dart';
 import 'package:pokedex/providers/fusion_provider.dart';
+import 'package:pokedex/providers/move_provider.dart';
+import 'package:pokedex/providers/pokemon_provider.dart';
 import 'package:pokedex/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -58,10 +58,10 @@ class _MyAppState extends State<MyApp> {
             ),
             appBarTheme: AppBarThemeData(
               backgroundColor:
-              ColorScheme.fromSeed(
-                seedColor: defaultColorTheme,
-                brightness: Brightness.light,
-              ).surface,
+                  ColorScheme.fromSeed(
+                    seedColor: defaultColorTheme,
+                    brightness: Brightness.light,
+                  ).surface,
             ),
           ),
           themeMode: themeProvider.themeMode,

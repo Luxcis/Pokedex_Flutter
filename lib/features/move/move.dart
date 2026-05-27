@@ -75,63 +75,76 @@ class _MovePageState extends State<MovePage> {
         children: [
           Expanded(
             child: Consumer<MoveProvider>(
-        builder: (context, provider, child) {
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+              builder: (context, provider, child) {
+                if (provider.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          if (provider.errorMessage != null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    provider.errorMessage!,
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => provider.loadMoveData(),
-                    child: const Text('重试'),
-                  ),
-                ],
-              ),
-            );
-          }
+                if (provider.errorMessage != null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          provider.errorMessage!,
+                          style: const TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => provider.loadMoveData(),
+                          child: const Text('重试'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-          if (provider.filteredMoveList.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text(
-                    provider.searchQuery.isEmpty ? '暂无招式数据' : '未找到匹配的招式',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            );
-          }
+                if (provider.filteredMoveList.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          provider.searchQuery.isEmpty ? '暂无招式数据' : '未找到匹配的招式',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-          return ListView.builder(
-            itemCount: provider.filteredMoveList.length,
-            padding: const EdgeInsets.all(8),
-            itemBuilder: (context, index) {
-              final move = provider.filteredMoveList[index];
-              return _buildMoveCard(move);
-            },
-          );
-        },
+                return ListView.builder(
+                  itemCount: provider.filteredMoveList.length,
+                  padding: const EdgeInsets.all(8),
+                  itemBuilder: (context, index) {
+                    final move = provider.filteredMoveList[index];
+                    return _buildMoveCard(move);
+                  },
+                );
+              },
             ),
           ),
           Container(
             height: 1,
-            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+            color: Theme.of(
+              context,
+            ).colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
         ],
       ),
@@ -141,15 +154,9 @@ class _MovePageState extends State<MovePage> {
   Widget _buildFilterButton(VoidCallback onTap) {
     return IconButton(
       onPressed: onTap,
-      icon: const Icon(
-        Icons.filter_list,
-        color: Colors.black87,
-      ),
+      icon: const Icon(Icons.filter_list, color: Colors.black87),
       padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(
-        minWidth: 40,
-        minHeight: 40,
-      ),
+      constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
     );
   }
 
@@ -160,18 +167,12 @@ class _MovePageState extends State<MovePage> {
     final Set<String> tempGens = {...provider.selectedGenerations};
     final Set<String> tempCats = {...provider.selectedCategories};
 
-    final allTypes = {
-      for (final m in provider.allMoveList) m.type
-    }.toList()
-      ..sort();
-    final allGens = {
-      for (final m in provider.allMoveList) m.generation
-    }.toList()
-      ..sort();
-    final allCats = {
-      for (final m in provider.allMoveList) m.category
-    }.toList()
-      ..sort();
+    final allTypes =
+        {for (final m in provider.allMoveList) m.type}.toList()..sort();
+    final allGens =
+        {for (final m in provider.allMoveList) m.generation}.toList()..sort();
+    final allCats =
+        {for (final m in provider.allMoveList) m.category}.toList()..sort();
 
     showDialog(
       context: context,
@@ -179,7 +180,10 @@ class _MovePageState extends State<MovePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return Dialog(
-              insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 24,
+              ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 280),
                 child: Padding(
@@ -194,7 +198,10 @@ class _MovePageState extends State<MovePage> {
                             const Expanded(
                               child: Text(
                                 '筛选',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                             IconButton(
@@ -204,97 +211,136 @@ class _MovePageState extends State<MovePage> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text('属性（已选 ${tempTypes.length}/2）', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                        Text(
+                          '属性（已选 ${tempTypes.length}/2）',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          children: allTypes.map((t) {
-                            final selected = tempTypes.contains(t);
-                            final color = selected
-                                ? PokemonTypeColors.getTypeColor(t)
-                                : const Color(0xFFE0E0E0);
-                            return Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  setDialogState(() {
-                                    if (selected) {
-                                      tempTypes.remove(t);
-                                    } else {
-                                      if (tempTypes.length >= 2) {
-                                        final String first = tempTypes.first;
-                                        tempTypes.remove(first);
-                                      }
-                                      tempTypes.add(t);
-                                    }
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(12),
-                                child: _buildSelectableChip(t, selected, color),
-                              ),
-                            );
-                          }).toList(),
+                          children:
+                              allTypes.map((t) {
+                                final selected = tempTypes.contains(t);
+                                final color =
+                                    selected
+                                        ? PokemonTypeColors.getTypeColor(t)
+                                        : const Color(0xFFE0E0E0);
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setDialogState(() {
+                                        if (selected) {
+                                          tempTypes.remove(t);
+                                        } else {
+                                          if (tempTypes.length >= 2) {
+                                            final String first =
+                                                tempTypes.first;
+                                            tempTypes.remove(first);
+                                          }
+                                          tempTypes.add(t);
+                                        }
+                                      });
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: _buildSelectableChip(
+                                      t,
+                                      selected,
+                                      color,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                         ),
                         const SizedBox(height: 16),
-                        const Text('世代', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                        const Text(
+                          '世代',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          children: allGens.map((g) {
-                            final selected = tempGens.contains(g);
-                            final color = selected ? Colors.black : const Color(0xFFE0E0E0);
-                            return Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  setDialogState(() {
-                                    if (selected) {
-                                      tempGens.remove(g);
-                                    } else {
-                                      tempGens
-                                        ..clear()
-                                        ..add(g);
-                                    }
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(12),
-                                child: _buildSelectableChip(g, selected, color),
-                              ),
-                            );
-                          }).toList(),
+                          children:
+                              allGens.map((g) {
+                                final selected = tempGens.contains(g);
+                                final color =
+                                    selected
+                                        ? Colors.black
+                                        : const Color(0xFFE0E0E0);
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setDialogState(() {
+                                        if (selected) {
+                                          tempGens.remove(g);
+                                        } else {
+                                          tempGens
+                                            ..clear()
+                                            ..add(g);
+                                        }
+                                      });
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: _buildSelectableChip(
+                                      g,
+                                      selected,
+                                      color,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                         ),
                         const SizedBox(height: 16),
-                        const Text('类别', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                        const Text(
+                          '类别',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          children: allCats.map((c) {
-                            final selected = tempCats.contains(c);
-                            final color = selected
-                                ? MoveCategoryColors.getCategoryColor(c)
-                                : const Color(0xFFE0E0E0);
-                            return Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  setDialogState(() {
-                                    if (selected) {
-                                      tempCats.remove(c);
-                                    } else {
-                                      tempCats
-                                        ..clear()
-                                        ..add(c);
-                                    }
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(12),
-                                child: _buildSelectableChip(c, selected, color),
-                              ),
-                            );
-                          }).toList(),
+                          children:
+                              allCats.map((c) {
+                                final selected = tempCats.contains(c);
+                                final color =
+                                    selected
+                                        ? MoveCategoryColors.getCategoryColor(c)
+                                        : const Color(0xFFE0E0E0);
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setDialogState(() {
+                                        if (selected) {
+                                          tempCats.remove(c);
+                                        } else {
+                                          tempCats
+                                            ..clear()
+                                            ..add(c);
+                                        }
+                                      });
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: _buildSelectableChip(
+                                      c,
+                                      selected,
+                                      color,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                         ),
                         const SizedBox(height: 20),
                         Row(
@@ -349,19 +395,23 @@ class _MovePageState extends State<MovePage> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
-      padding: EdgeInsets.symmetric(horizontal: selected ? 12 : 10, vertical: 6),
+      padding: EdgeInsets.symmetric(
+        horizontal: selected ? 12 : 10,
+        vertical: 6,
+      ),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: selected
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [],
+        boxShadow:
+            selected
+                ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+                : [],
       ),
       child: Text(
         text,
@@ -381,16 +431,20 @@ class _MovePageState extends State<MovePage> {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => MoveDetailPage(
-                moveIndex: move.index,
-                moveName: move.name,
-              ),
+              builder:
+                  (_) => MoveDetailPage(
+                    moveIndex: move.index,
+                    moveName: move.name,
+                  ),
             ),
           );
         },
         borderRadius: BorderRadius.circular(12),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           title: Row(
             children: [
               Expanded(

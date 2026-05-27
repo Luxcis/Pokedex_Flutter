@@ -14,18 +14,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final themeDropdownItems = [
-      DropdownMenuItem(
-        value: ThemeMode.light,
-        child: Text('浅色'),
-      ),
-      DropdownMenuItem(
-        value: ThemeMode.dark,
-        child: Text('深色'),
-      ),
-      DropdownMenuItem(
-        value: ThemeMode.system,
-        child: Text('跟随系统'),
-      ),
+      DropdownMenuItem(value: ThemeMode.light, child: Text('浅色')),
+      DropdownMenuItem(value: ThemeMode.dark, child: Text('深色')),
+      DropdownMenuItem(value: ThemeMode.system, child: Text('跟随系统')),
     ];
     final themeSettingsItem = _SettingItem(
       title: '应用主题',

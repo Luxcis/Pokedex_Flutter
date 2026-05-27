@@ -33,8 +33,9 @@ class MoveProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/move_list.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/move_list.json',
+      );
       final List<dynamic> jsonList = json.decode(jsonString);
 
       _allMoveList = jsonList.map((json) => MoveModel.fromJson(json)).toList();
@@ -144,15 +145,15 @@ class MoveProvider extends ChangeNotifier {
     if (_pokemonIconMap.isNotEmpty) return;
 
     try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/pokemon_full_list.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/pokemon_full_list.json',
+      );
       final List<dynamic> jsonList = jsonDecode(jsonString);
       for (final entry in jsonList) {
         final idx = entry['index'] as String? ?? '';
         final meta = entry['meta'] as Map<String, dynamic>?;
         final iconPos = meta?['icon_position'] as String? ?? '';
-        final types =
-            List<String>.from(entry['types'] as List<dynamic>? ?? []);
+        final types = List<String>.from(entry['types'] as List<dynamic>? ?? []);
         if (idx.isNotEmpty) {
           _pokemonIconMap[idx] = iconPos;
           _pokemonTypesMap[idx] = types;
@@ -173,10 +174,16 @@ class MoveProvider extends ChangeNotifier {
     return _pokemonTypesMap[pokemonIndex] ?? [];
   }
 
+  String? getMoveIndex(String name) {
+    final match = _allMoveList.where((m) => m.name == name);
+    return match.isNotEmpty ? match.first.index : null;
+  }
+
   Future<MoveDetailModel> loadMoveDetail(String index, String name) async {
     try {
-      final String jsonString = await rootBundle
-          .loadString('assets/data/move/$index-$name.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/data/move/$index-$name.json',
+      );
       final Map<String, dynamic> json =
           jsonDecode(jsonString) as Map<String, dynamic>;
       return MoveDetailModel.fromJson(json);
