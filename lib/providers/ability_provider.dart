@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokedex/models/ability_detail_model.dart';
 import 'package:pokedex/models/ability_model.dart';
 
 class AbilityProvider extends ChangeNotifier {
@@ -13,6 +14,8 @@ class AbilityProvider extends ChangeNotifier {
   String? _errorMessage;
   // 选中的筛选项：世代
   final Set<String> _selectedGenerations = {};
+
+  final Map<String, String> _pokemonIconMap = {};
 
   List<AbilityModel> get allAbilityList => _allAbilityList;
   List<AbilityModel> get filteredAbilityList => _filteredAbilityList;
@@ -91,9 +94,47 @@ class AbilityProvider extends ChangeNotifier {
     _applyFilters();
   }
 
-  // 重置筛选
   void resetFilters() {
     _selectedGenerations.clear();
     _applyFilters();
+  }
+
+  Future<AbilityDetailModel> loadAbilityDetail(
+      String index, String name) async {
+    try {
+      final String jsonString = await rootBundle
+          .loadString('assets/data/ability/$index-$name.json');
+      final Map<String, dynamic> json =
+          jsonDecode(jsonString) as Map<String, dynamic>;
+      return AbilityDetailModel.fromJson(json);
+    } catch (e) {
+      log('加载特性详情失败 ($index-$name): $e');
+      rethrow;
+    }
+  }
+
+  Future<String?> getPokemonIconPosition(String pokemonIndex) async {
+    if (_pokemonIconMap.isEmpty) {
+      await _loadPokemonIconMap();
+    }
+    return _pokemonIconMap[pokemonIndex];
+  }
+
+  Future<void> _loadPokemonIconMap() async {
+    try {
+      final String jsonString = await rootBundle
+          .loadString('assets/data/pokemon_full_list.json');
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      for (final entry in jsonList) {
+        final idx = entry['index'] as String? ?? '';
+        final meta = entry['meta'] as Map<String, dynamic>?;
+        final iconPos = meta?['icon_position'] as String? ?? '';
+        if (idx.isNotEmpty) {
+          _pokemonIconMap[idx] = iconPos;
+        }
+      }
+    } catch (e) {
+      log('加载宝可梦精灵图数据失败: $e');
+    }
   }
 }

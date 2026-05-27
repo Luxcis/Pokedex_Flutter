@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/features/ability/ability_detail_page.dart';
 import 'package:pokedex/models/ability_model.dart';
 import 'package:pokedex/providers/ability_provider.dart';
 import 'package:provider/provider.dart';
@@ -291,7 +292,17 @@ class _AbilityPageState extends State<AbilityPage> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AbilityDetailPage(
+                abilityIndex: ability.index,
+                abilityName: ability.name,
+              ),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(12),
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(

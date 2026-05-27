@@ -60,6 +60,8 @@ flutter:
   generate: true
   assets:
     - assets/data/
+    - assets/data/ability/
+    - assets/data/move/
     - assets/data/images/
     - assets/icon/
 

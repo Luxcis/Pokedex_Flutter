@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokedex/features/move/move_detail_page.dart';
 import 'package:pokedex/models/move_model.dart';
 import 'package:pokedex/providers/move_provider.dart';
 import 'package:pokedex/utils/move_category_colors.dart';
@@ -377,7 +378,16 @@ class _MovePageState extends State<MovePage> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => MoveDetailPage(
+                moveIndex: move.index,
+                moveName: move.name,
+              ),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(12),
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

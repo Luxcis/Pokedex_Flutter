@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokedex/models/move_detail_model.dart';
 import 'package:pokedex/models/move_model.dart';
 
 class MoveProvider extends ChangeNotifier {
@@ -134,5 +135,54 @@ class MoveProvider extends ChangeNotifier {
     _selectedGenerations.clear();
     _selectedCategories.clear();
     _applyFilters();
+  }
+
+  final Map<String, String> _pokemonIconMap = {};
+  final Map<String, List<String>> _pokemonTypesMap = {};
+
+  Future<void> _ensurePokemonDataLoaded() async {
+    if (_pokemonIconMap.isNotEmpty) return;
+
+    try {
+      final String jsonString =
+          await rootBundle.loadString('assets/data/pokemon_full_list.json');
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      for (final entry in jsonList) {
+        final idx = entry['index'] as String? ?? '';
+        final meta = entry['meta'] as Map<String, dynamic>?;
+        final iconPos = meta?['icon_position'] as String? ?? '';
+        final types =
+            List<String>.from(entry['types'] as List<dynamic>? ?? []);
+        if (idx.isNotEmpty) {
+          _pokemonIconMap[idx] = iconPos;
+          _pokemonTypesMap[idx] = types;
+        }
+      }
+    } catch (e) {
+      log('加载宝可梦数据失败: $e');
+    }
+  }
+
+  Future<String?> getPokemonIconPosition(String pokemonIndex) async {
+    await _ensurePokemonDataLoaded();
+    return _pokemonIconMap[pokemonIndex];
+  }
+
+  Future<List<String>> getPokemonTypes(String pokemonIndex) async {
+    await _ensurePokemonDataLoaded();
+    return _pokemonTypesMap[pokemonIndex] ?? [];
+  }
+
+  Future<MoveDetailModel> loadMoveDetail(String index, String name) async {
+    try {
+      final String jsonString = await rootBundle
+          .loadString('assets/data/move/$index-$name.json');
+      final Map<String, dynamic> json =
+          jsonDecode(jsonString) as Map<String, dynamic>;
+      return MoveDetailModel.fromJson(json);
+    } catch (e) {
+      log('加载招式详情失败 ($index-$name): $e');
+      rethrow;
+    }
   }
 }
