@@ -4,6 +4,7 @@ import 'package:pokedex/features/home/home.dart';
 import 'package:pokedex/providers/pokemon_provider.dart';
 import 'package:pokedex/providers/ability_provider.dart';
 import 'package:pokedex/providers/move_provider.dart';
+import 'package:pokedex/providers/fusion_provider.dart';
 import 'package:pokedex/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -79,6 +80,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => PokemonProvider()),
       ChangeNotifierProvider(create: (_) => AbilityProvider()),
       ChangeNotifierProvider(create: (_) => MoveProvider()),
+      ChangeNotifierProvider(create: (_) => FusionProvider()),
     ],
     child: const MyApp(),
   );
