@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class TypeEffectiveness {
   static const _typeIndex = {
     '一般': 0,
@@ -449,6 +451,80 @@ class TypeEffectiveness {
       'notVeryEffective': notVeryEffective,
       'noEffect': noEffect,
     };
+  }
+
+  static const multiplierOrder = [4.0, 2.0, 1.0, 0.5, 0.25, 0.0];
+
+  static Color getMultiplierColor(double multiplier, Brightness brightness) {
+    if (multiplier == 0) {
+      return brightness == Brightness.dark
+          ? Colors.grey.shade600
+          : Colors.grey.shade400;
+    }
+    if (multiplier <= 0.25) {
+      return brightness == Brightness.dark
+          ? const Color(0xFF4488DD)
+          : const Color(0xFF3366CC);
+    }
+    if (multiplier <= 0.5) {
+      return brightness == Brightness.dark
+          ? const Color(0xFF55AA88)
+          : const Color(0xFF339966);
+    }
+    if (multiplier >= 4) {
+      return Colors.red.shade700;
+    }
+    if (multiplier >= 2) {
+      return Colors.orange.shade700;
+    }
+    return brightness == Brightness.dark
+        ? Colors.grey.shade400
+        : Colors.grey.shade700;
+  }
+
+  static Color getTypeCardColor(
+    Color typeColor,
+    double multiplier,
+    Brightness brightness,
+  ) {
+    if (multiplier == 0) {
+      return brightness == Brightness.dark
+          ? Colors.grey.shade800
+          : Colors.grey.shade100;
+    }
+    if (multiplier <= 0.5) {
+      return typeColor.withValues(
+        alpha: brightness == Brightness.dark ? 0.2 : 0.08,
+      );
+    }
+    if (multiplier >= 2) {
+      return typeColor.withValues(
+        alpha: brightness == Brightness.dark ? 0.35 : 0.18,
+      );
+    }
+    return typeColor.withValues(
+      alpha: brightness == Brightness.dark ? 0.15 : 0.06,
+    );
+  }
+
+  static String multiplierGroupLabel(double multiplier) {
+    if (multiplier == 0) return '无效';
+    if (multiplier <= 0.25) return '¼倍 减半';
+    if (multiplier <= 0.5) return '½倍 减半';
+    if (multiplier == 1) return '×1 正常';
+    if (multiplier >= 4) return '×4 翻倍';
+    if (multiplier >= 2) return '×2 翻倍';
+    return '正常';
+  }
+
+  static String multiplierToString(double multiplier) {
+    if (multiplier == 0) return '0';
+    if (multiplier == 0.25) return '¼';
+    if (multiplier == 0.5) return '½';
+    if (multiplier == 1) return '1';
+    if (multiplier == 2) return '2';
+    if (multiplier == 4) return '4';
+    return multiplier.toString();
   }
 }
 

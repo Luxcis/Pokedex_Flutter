@@ -16,52 +16,39 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  static const _seedColor = Colors.deepPurple;
+
+  ColorScheme _buildColorScheme(ColorScheme? dynamicScheme,
+      Brightness brightness,) {
+    return dynamicScheme ??
+        ColorScheme.fromSeed(seedColor: _seedColor, brightness: brightness);
+  }
+
   @override
   Widget build(BuildContext context) {
-    const defaultColorTheme = Colors.deepPurple;
     final themeProvider = Provider.of<ThemeProvider>(context);
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        final lightScheme = _buildColorScheme(lightDynamic, Brightness.light);
+        final darkScheme = _buildColorScheme(darkDynamic, Brightness.dark);
         return MaterialApp(
           title: 'Template',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: defaultColorTheme,
-              brightness: Brightness.light,
-            ),
+            colorScheme: lightScheme,
             navigationBarTheme: NavigationBarThemeData(
-              backgroundColor:
-                  ColorScheme.fromSeed(
-                    seedColor: defaultColorTheme,
-                    brightness: Brightness.light,
-                  ).surface,
+              backgroundColor: lightScheme.surface,
             ),
             appBarTheme: AppBarThemeData(
-              backgroundColor:
-                  ColorScheme.fromSeed(
-                    seedColor: defaultColorTheme,
-                    brightness: Brightness.light,
-                  ).surface,
+              backgroundColor: lightScheme.surface,
             ),
           ),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: defaultColorTheme,
-              brightness: Brightness.dark,
-            ),
+            colorScheme: darkScheme,
             navigationBarTheme: NavigationBarThemeData(
-              backgroundColor:
-                  ColorScheme.fromSeed(
-                    seedColor: defaultColorTheme,
-                    brightness: Brightness.dark,
-                  ).surface,
+              backgroundColor: darkScheme.surface,
             ),
             appBarTheme: AppBarThemeData(
-              backgroundColor:
-                  ColorScheme.fromSeed(
-                    seedColor: defaultColorTheme,
-                    brightness: Brightness.light,
-                  ).surface,
+              backgroundColor: darkScheme.surface,
             ),
           ),
           themeMode: themeProvider.themeMode,

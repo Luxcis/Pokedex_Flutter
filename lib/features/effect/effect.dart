@@ -31,30 +31,7 @@ class _EffectPageState extends State<EffectPage> {
   }
 
   Color _getMultiplierColor(double multiplier, Brightness brightness) {
-    if (multiplier == 0) {
-      return brightness == Brightness.dark
-          ? Colors.grey.shade600
-          : Colors.grey.shade400;
-    }
-    if (multiplier <= 0.25) {
-      return brightness == Brightness.dark
-          ? const Color(0xFF4488DD)
-          : const Color(0xFF3366CC);
-    }
-    if (multiplier <= 0.5) {
-      return brightness == Brightness.dark
-          ? const Color(0xFF55AA88)
-          : const Color(0xFF339966);
-    }
-    if (multiplier >= 4) {
-      return Colors.red.shade700;
-    }
-    if (multiplier >= 2) {
-      return Colors.orange.shade700;
-    }
-    return brightness == Brightness.dark
-        ? Colors.grey.shade400
-        : Colors.grey.shade700;
+    return TypeEffectiveness.getMultiplierColor(multiplier, brightness);
   }
 
   Color _getCardColor(
@@ -62,24 +39,8 @@ class _EffectPageState extends State<EffectPage> {
     double multiplier,
     Brightness brightness,
   ) {
-    if (multiplier == 0) {
-      return brightness == Brightness.dark
-          ? Colors.grey.shade800
-          : Colors.grey.shade100;
-    }
-    if (multiplier <= 0.5) {
-      return typeColor.withValues(
-        alpha: brightness == Brightness.dark ? 0.2 : 0.08,
-      );
-    }
-    if (multiplier >= 2) {
-      return typeColor.withValues(
-        alpha: brightness == Brightness.dark ? 0.35 : 0.18,
-      );
-    }
-    return typeColor.withValues(
-      alpha: brightness == Brightness.dark ? 0.15 : 0.06,
-    );
+    return TypeEffectiveness.getTypeCardColor(
+        typeColor, multiplier, brightness);
   }
 
   void _switchMode(EffectMode mode) {
@@ -97,16 +58,8 @@ class _EffectPageState extends State<EffectPage> {
     return groups;
   }
 
-  static const _multiplierOrder = [4.0, 2.0, 1.0, 0.5, 0.25, 0.0];
-
   String _groupLabel(double multiplier) {
-    if (multiplier == 0) return '无效';
-    if (multiplier <= 0.25) return '¼倍 减半';
-    if (multiplier <= 0.5) return '½倍 减半';
-    if (multiplier == 1) return '×1 正常';
-    if (multiplier >= 4) return '×4 翻倍';
-    if (multiplier >= 2) return '×2 翻倍';
-    return '正常';
+    return TypeEffectiveness.multiplierGroupLabel(multiplier);
   }
 
   void _onDefendType1Changed(String? value) {
@@ -438,7 +391,7 @@ class _EffectPageState extends State<EffectPage> {
     final groups = _groupedResults;
     final sections = <Widget>[];
 
-    for (final multiplier in _multiplierOrder) {
+    for (final multiplier in TypeEffectiveness.multiplierOrder) {
       final items = groups[multiplier];
       if (items == null || items.isEmpty) continue;
 
@@ -485,7 +438,7 @@ class _EffectPageState extends State<EffectPage> {
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
-            '×${_multiplierToString(multiplier)}',
+            '×${TypeEffectiveness.multiplierToString(multiplier)}',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -514,16 +467,6 @@ class _EffectPageState extends State<EffectPage> {
         ),
       ],
     );
-  }
-
-  String _multiplierToString(double multiplier) {
-    if (multiplier == 0) return '0';
-    if (multiplier == 0.25) return '¼';
-    if (multiplier == 0.5) return '½';
-    if (multiplier == 1) return '1';
-    if (multiplier == 2) return '2';
-    if (multiplier == 4) return '4';
-    return multiplier.toString();
   }
 
   Widget _buildResultChip(TypeEffectResult result, Brightness brightness) {

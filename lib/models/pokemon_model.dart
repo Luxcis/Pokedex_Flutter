@@ -7,7 +7,7 @@ class PokemonModel {
   final List<String> types;
   final PokemonMeta meta;
 
-  PokemonModel({
+  const PokemonModel({
     required this.index,
     required this.name,
     required this.nameJp,
@@ -45,7 +45,7 @@ class PokemonModel {
 class PokemonMeta {
   final String iconPosition;
 
-  PokemonMeta({required this.iconPosition});
+  const PokemonMeta({required this.iconPosition});
 
   factory PokemonMeta.fromJson(Map<String, dynamic> json) {
     return PokemonMeta(iconPosition: json['icon_position'] ?? '0px 0px');

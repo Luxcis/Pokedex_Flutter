@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PokemonSpriteIcon extends StatelessWidget {
+  static final _positionRegex = RegExp(r'(-?\d+)px');
+
   final String iconPosition;
   final double size;
 
@@ -45,8 +47,7 @@ class PokemonSpriteIcon extends StatelessWidget {
 
   List<double> _parseIconPosition(String position) {
     // 解析类似 "-1176px -280px" 的字符串
-    final regex = RegExp(r'(-?\d+)px');
-    final matches = regex.allMatches(position);
+    final matches = _positionRegex.allMatches(position);
 
     if (matches.length >= 2) {
       final x = double.tryParse(matches.elementAt(0).group(1) ?? '0') ?? 0.0;

@@ -10,15 +10,15 @@ class ThemeProvider with ChangeNotifier {
     _loadThemePreference();
   }
 
-  void setThemeMode(ThemeMode newMode) async {
+  void setThemeMode(ThemeMode newMode) {
     if (_themeMode != newMode) {
       _themeMode = newMode;
       notifyListeners();
-      _saveThemePreference(newMode);
+      _saveThemePreference(newMode).catchError((_) {});
     }
   }
 
-  void _loadThemePreference() async {
+  Future<void> _loadThemePreference() async {
     final prefs = await SharedPreferences.getInstance();
     final int? themeIndex = prefs.getInt(_themeModeKey);
     if (themeIndex != null &&
@@ -28,12 +28,12 @@ class ThemeProvider with ChangeNotifier {
       notifyListeners();
     } else {
       _themeMode = ThemeMode.system;
-      _saveThemePreference(_themeMode);
+      _saveThemePreference(_themeMode).catchError((_) {});
       notifyListeners();
     }
   }
 
-  void _saveThemePreference(ThemeMode option) async {
+  Future<void> _saveThemePreference(ThemeMode option) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt(_themeModeKey, option.index);
   }
