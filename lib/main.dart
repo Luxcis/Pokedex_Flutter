@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         final lightScheme = _buildColorScheme(lightDynamic, Brightness.light);
         final darkScheme = _buildColorScheme(darkDynamic, Brightness.dark);
         return MaterialApp(
-          title: 'Template',
+          title: 'PokéDex',
           theme: ThemeData(
             colorScheme: lightScheme,
             navigationBarTheme: NavigationBarThemeData(

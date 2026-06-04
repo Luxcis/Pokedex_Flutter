@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:pokedex/features/ability/ability.dart';
 import 'package:pokedex/features/effect/effect.dart';
 import 'package:pokedex/features/fusion/fusion.dart';

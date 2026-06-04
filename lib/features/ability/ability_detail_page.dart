@@ -3,7 +3,7 @@ import 'package:pokedex/features/pokemon/pokemon_detail_page.dart';
 import 'package:pokedex/features/pokemon/widgets/pokemon_sprite_icon.dart';
 import 'package:pokedex/models/ability_detail_model.dart';
 import 'package:pokedex/providers/ability_provider.dart';
-import 'package:pokedex/utils/pokemon_type_colors.dart';
+import 'package:pokedex/widgets/type_chip.dart';
 import 'package:provider/provider.dart';
 
 class AbilityDetailPage extends StatefulWidget {
@@ -339,7 +339,7 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
                           runSpacing: 4,
                           children:
                               pokemon.types
-                                  .map((t) => _buildTypeChip(t))
+                                  .map((t) => TypeChip(type: t))
                                   .toList(),
                         ),
                       ],
@@ -389,24 +389,6 @@ class _AbilityDetailPageState extends State<AbilityDetailPage> {
       return '第二特性';
     }
     return '特性';
-  }
-
-  Widget _buildTypeChip(String type) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
   }
 
   Widget _buildSectionTitle(String title) {

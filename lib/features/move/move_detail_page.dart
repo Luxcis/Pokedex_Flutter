@@ -3,8 +3,8 @@ import 'package:pokedex/features/pokemon/pokemon_detail_page.dart';
 import 'package:pokedex/features/pokemon/widgets/pokemon_sprite_icon.dart';
 import 'package:pokedex/models/move_detail_model.dart';
 import 'package:pokedex/providers/move_provider.dart';
-import 'package:pokedex/utils/move_category_colors.dart';
-import 'package:pokedex/utils/pokemon_type_colors.dart';
+import 'package:pokedex/widgets/category_chip.dart';
+import 'package:pokedex/widgets/type_chip.dart';
 import 'package:provider/provider.dart';
 
 class MoveDetailPage extends StatefulWidget {
@@ -140,8 +140,8 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
           spacing: 8,
           runSpacing: 8,
           children: [
-            _buildTypeChip(detail.type),
-            _buildCategoryChip(detail.category),
+            TypeChip(type: detail.type),
+            CategoryChip(category: detail.category),
           ],
         ),
         const SizedBox(height: 12),
@@ -483,7 +483,7 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
                             spacing: 4,
                             runSpacing: 4,
                             children:
-                                types.map((t) => _buildTypeChip(t)).toList(),
+                                types.map((t) => TypeChip(type: t)).toList(),
                           ),
                       ],
                     ),
@@ -503,42 +503,6 @@ class _MoveDetailPageState extends State<MoveDetailPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTypeChip(String type) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip(String category) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: MoveCategoryColors.getCategoryColor(category),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        category,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
     );
   }
 

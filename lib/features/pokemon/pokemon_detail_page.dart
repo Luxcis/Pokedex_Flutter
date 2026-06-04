@@ -8,8 +8,16 @@ import 'package:pokedex/features/move/move_detail_page.dart';
 import 'package:pokedex/models/pokemon_detail_model.dart';
 import 'package:pokedex/providers/ability_provider.dart';
 import 'package:pokedex/providers/move_provider.dart';
-import 'package:pokedex/utils/pokemon_type_colors.dart';
+import 'package:pokedex/widgets/type_chip.dart';
 import 'package:provider/provider.dart';
+
+Color _getStatColor(double value) {
+  if (value >= 150) return const Color(0xFF4CAF50);
+  if (value >= 100) return const Color(0xFF8BC34A);
+  if (value >= 70) return const Color(0xFFFFC107);
+  if (value >= 40) return const Color(0xFFFF9800);
+  return const Color(0xFFF44336);
+}
 
 class PokemonDetailPage extends StatefulWidget {
   final String pokemonName;
@@ -57,6 +65,8 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
       final Map<String, dynamic> json = jsonDecode(jsonString);
       _detail = PokemonDetailModel.fromJson(json);
 
+      if (!mounted) return;
+
       if (_detail!.hasMultipleForms) {
         _formTabController = TabController(
           length: _detail!.forms.length,
@@ -75,10 +85,11 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       log('加载宝可梦详情失败: $e');
       setState(() {
         _isLoading = false;
-        _errorMessage = '加载失败: $e';
+        _errorMessage = '数据加载失败，请重试';
       });
     }
   }
@@ -228,7 +239,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
             child: Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: form.types.map((t) => _buildTypeChip(t)).toList(),
+              children: form.types.map((t) => TypeChip(type: t)).toList(),
             ),
           ),
           const SizedBox(height: 12),
@@ -309,24 +320,6 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
         const SizedBox(height: 4),
         Text(value, style: const TextStyle(fontSize: 14)),
       ],
-    );
-  }
-
-  Widget _buildTypeChip(String type) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
     );
   }
 
@@ -549,14 +542,6 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
             );
           }).toList(),
     );
-  }
-
-  Color _getStatColor(double value) {
-    if (value >= 150) return const Color(0xFF4CAF50);
-    if (value >= 100) return const Color(0xFF8BC34A);
-    if (value >= 70) return const Color(0xFFFFC107);
-    if (value >= 40) return const Color(0xFFFF9800);
-    return const Color(0xFFF44336);
   }
 
   Widget _buildEvolutionSection() {
@@ -1021,7 +1006,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
                     ),
                   ),
                 ),
-                DataCell(_buildTypeChipSmall(move.type)),
+                DataCell(TypeChipSmall(type: move.type)),
                 DataCell(
                   Text(move.category, style: const TextStyle(fontSize: 12)),
                 ),
@@ -1077,19 +1062,6 @@ class _PokemonDetailPageState extends State<PokemonDetailPage>
     }
   }
 
-  Widget _buildTypeChipSmall(String type) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(color: Colors.white, fontSize: 10),
-      ),
-    );
-  }
 }
 
 class _StatsTabView extends StatefulWidget {
@@ -1203,13 +1175,6 @@ class _StatsTabViewState extends State<_StatsTabView>
     );
   }
 
-  Color _getStatColor(double value) {
-    if (value >= 150) return const Color(0xFF4CAF50);
-    if (value >= 100) return const Color(0xFF8BC34A);
-    if (value >= 70) return const Color(0xFFFFC107);
-    if (value >= 40) return const Color(0xFFFF9800);
-    return const Color(0xFFF44336);
-  }
 }
 
 class _MoveTabView extends StatefulWidget {
@@ -1296,7 +1261,7 @@ class _MoveTabViewState extends State<_MoveTabView>
                     ),
                   ),
                 ),
-                DataCell(_buildTypeChipSmall(move.type)),
+                DataCell(TypeChipSmall(type: move.type)),
                 DataCell(
                   Text(move.category, style: const TextStyle(fontSize: 12)),
                 ),
@@ -1351,17 +1316,4 @@ class _MoveTabViewState extends State<_MoveTabView>
     );
   }
 
-  Widget _buildTypeChipSmall(String type) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(color: Colors.white, fontSize: 10),
-      ),
-    );
-  }
 }

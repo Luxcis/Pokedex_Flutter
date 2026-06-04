@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokedex/features/ability/ability_detail_page.dart';
 import 'package:pokedex/models/ability_model.dart';
 import 'package:pokedex/providers/ability_provider.dart';
+import 'package:pokedex/widgets/filter_button.dart';
+import 'package:pokedex/widgets/selectable_chip.dart';
 import 'package:provider/provider.dart';
 
 class AbilityPage extends StatefulWidget {
@@ -64,7 +66,7 @@ class _AbilityPageState extends State<AbilityPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              _buildFilterButton(() => _showAbilityFilterDialog()),
+              FilterButton(onTap: () => _showAbilityFilterDialog()),
             ],
           ),
         ),
@@ -149,15 +151,6 @@ class _AbilityPageState extends State<AbilityPage> {
     );
   }
 
-  Widget _buildFilterButton(VoidCallback onTap) {
-    return IconButton(
-      onPressed: onTap,
-      icon: const Icon(Icons.filter_list, color: Colors.black87),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-    );
-  }
-
   // 弹出特性筛选面板：仅包含世代，单选
   void _showAbilityFilterDialog() {
     final provider = context.read<AbilityProvider>();
@@ -221,27 +214,21 @@ class _AbilityPageState extends State<AbilityPage> {
                                   selected
                                       ? Colors.black
                                       : const Color(0xFFE0E0E0);
-                              return Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {
-                                    setDialogState(() {
-                                      if (selected) {
-                                        tempGens.remove(g);
-                                      } else {
-                                        tempGens
-                                          ..clear()
-                                          ..add(g);
-                                      }
-                                    });
-                                  },
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: _buildSelectableChip(
-                                    g,
-                                    selected,
-                                    color,
-                                  ),
-                                ),
+                              return SelectableChip(
+                                text: g,
+                                selected: selected,
+                                bgColor: color,
+                                onTap: () {
+                                  setDialogState(() {
+                                    if (selected) {
+                                      tempGens.remove(g);
+                                    } else {
+                                      tempGens
+                                        ..clear()
+                                        ..add(g);
+                                    }
+                                  });
+                                },
                               );
                             }).toList(),
                       ),
@@ -282,39 +269,6 @@ class _AbilityPageState extends State<AbilityPage> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildSelectableChip(String text, bool selected, Color bgColor) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOut,
-      padding: EdgeInsets.symmetric(
-        horizontal: selected ? 12 : 10,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow:
-            selected
-                ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-                : [],
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: selected ? Colors.white : Colors.black87,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
     );
   }
 

@@ -14,15 +14,24 @@ class PokemonDataCache {
 
   Map<String, String>? _iconMap;
   Map<String, List<String>>? _typesMap;
-  bool _isLoading = false;
+  Future<void>? _loadingFuture;
 
   bool get isLoaded => _iconMap != null;
 
   Future<void> ensureLoaded() async {
     if (_iconMap != null) return;
-    if (_isLoading) return;
-    _isLoading = true;
 
+    if (_loadingFuture != null) {
+      await _loadingFuture;
+      return;
+    }
+
+    _loadingFuture = _doLoad();
+    await _loadingFuture;
+    _loadingFuture = null;
+  }
+
+  Future<void> _doLoad() async {
     final iconMap = <String, String>{};
     final typesMap = <String, List<String>>{};
 
@@ -44,8 +53,6 @@ class PokemonDataCache {
       _iconMap = iconMap;
       _typesMap = typesMap;
     } catch (_) {
-    } finally {
-      _isLoading = false;
     }
   }
 

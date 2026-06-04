@@ -4,6 +4,10 @@ import 'package:pokedex/models/move_model.dart';
 import 'package:pokedex/providers/move_provider.dart';
 import 'package:pokedex/utils/move_category_colors.dart';
 import 'package:pokedex/utils/pokemon_type_colors.dart';
+import 'package:pokedex/widgets/category_chip.dart';
+import 'package:pokedex/widgets/filter_button.dart';
+import 'package:pokedex/widgets/selectable_chip.dart';
+import 'package:pokedex/widgets/type_chip.dart';
 import 'package:provider/provider.dart';
 
 class MovePage extends StatefulWidget {
@@ -66,7 +70,7 @@ class _MovePageState extends State<MovePage> {
                 ),
               ),
               const SizedBox(width: 8),
-              _buildFilterButton(() => _showMoveFilterDialog()),
+              FilterButton(onTap: () => _showMoveFilterDialog()),
             ],
           ),
         ),
@@ -151,15 +155,6 @@ class _MovePageState extends State<MovePage> {
     );
   }
 
-  Widget _buildFilterButton(VoidCallback onTap) {
-    return IconButton(
-      onPressed: onTap,
-      icon: const Icon(Icons.filter_list, color: Colors.black87),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-    );
-  }
-
   // 弹出招式筛选面板：包含属性、世代、类别
   void _showMoveFilterDialog() {
     final provider = context.read<MoveProvider>();
@@ -229,30 +224,23 @@ class _MovePageState extends State<MovePage> {
                                     selected
                                         ? PokemonTypeColors.getTypeColor(t)
                                         : const Color(0xFFE0E0E0);
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      setDialogState(() {
-                                        if (selected) {
-                                          tempTypes.remove(t);
-                                        } else {
-                                          if (tempTypes.length >= 2) {
-                                            final String first =
-                                                tempTypes.first;
-                                            tempTypes.remove(first);
-                                          }
-                                          tempTypes.add(t);
+                                return SelectableChip(
+                                  text: t,
+                                  selected: selected,
+                                  bgColor: color,
+                                  onTap: () {
+                                    setDialogState(() {
+                                      if (selected) {
+                                        tempTypes.remove(t);
+                                      } else {
+                                        if (tempTypes.length >= 2) {
+                                          final String first = tempTypes.first;
+                                          tempTypes.remove(first);
                                         }
-                                      });
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: _buildSelectableChip(
-                                      t,
-                                      selected,
-                                      color,
-                                    ),
-                                  ),
+                                        tempTypes.add(t);
+                                      }
+                                    });
+                                  },
                                 );
                               }).toList(),
                         ),
@@ -275,27 +263,21 @@ class _MovePageState extends State<MovePage> {
                                     selected
                                         ? Colors.black
                                         : const Color(0xFFE0E0E0);
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      setDialogState(() {
-                                        if (selected) {
-                                          tempGens.remove(g);
-                                        } else {
-                                          tempGens
-                                            ..clear()
-                                            ..add(g);
-                                        }
-                                      });
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: _buildSelectableChip(
-                                      g,
-                                      selected,
-                                      color,
-                                    ),
-                                  ),
+                                return SelectableChip(
+                                  text: g,
+                                  selected: selected,
+                                  bgColor: color,
+                                  onTap: () {
+                                    setDialogState(() {
+                                      if (selected) {
+                                        tempGens.remove(g);
+                                      } else {
+                                        tempGens
+                                          ..clear()
+                                          ..add(g);
+                                      }
+                                    });
+                                  },
                                 );
                               }).toList(),
                         ),
@@ -318,27 +300,21 @@ class _MovePageState extends State<MovePage> {
                                     selected
                                         ? MoveCategoryColors.getCategoryColor(c)
                                         : const Color(0xFFE0E0E0);
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      setDialogState(() {
-                                        if (selected) {
-                                          tempCats.remove(c);
-                                        } else {
-                                          tempCats
-                                            ..clear()
-                                            ..add(c);
-                                        }
-                                      });
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: _buildSelectableChip(
-                                      c,
-                                      selected,
-                                      color,
-                                    ),
-                                  ),
+                                return SelectableChip(
+                                  text: c,
+                                  selected: selected,
+                                  bgColor: color,
+                                  onTap: () {
+                                    setDialogState(() {
+                                      if (selected) {
+                                        tempCats.remove(c);
+                                      } else {
+                                        tempCats
+                                          ..clear()
+                                          ..add(c);
+                                      }
+                                    });
+                                  },
                                 );
                               }).toList(),
                         ),
@@ -391,39 +367,6 @@ class _MovePageState extends State<MovePage> {
     );
   }
 
-  Widget _buildSelectableChip(String text, bool selected, Color bgColor) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOut,
-      padding: EdgeInsets.symmetric(
-        horizontal: selected ? 12 : 10,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow:
-            selected
-                ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-                : [],
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: selected ? Colors.white : Colors.black87,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
   Widget _buildMoveCard(MoveModel move) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -473,48 +416,12 @@ class _MovePageState extends State<MovePage> {
                 spacing: 6,
                 runSpacing: 6,
                 children: [
-                  _buildTypeChip(move.type),
-                  _buildCategoryChip(move.category),
+                  TypeChip(type: move.type),
+                  CategoryChip(category: move.category),
                 ],
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTypeChip(String type) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip(String category) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: MoveCategoryColors.getCategoryColor(category),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        category,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
         ),
       ),
     );

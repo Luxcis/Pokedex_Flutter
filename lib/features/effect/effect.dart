@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/features/settings/settings.dart';
 import 'package:pokedex/utils/pokemon_type_colors.dart';
 import 'package:pokedex/utils/type_effectiveness.dart';
 
@@ -93,41 +92,46 @@ class _EffectPageState extends State<EffectPage> {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final colorScheme = Theme.of(context).colorScheme;
-    final actions = [
-      IconButton(
-        icon: const Icon(Icons.settings),
-        onPressed: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
-        },
-      ),
-    ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('属性克制'), actions: actions),
+      appBar: AppBar(title: const Text('属性克制')),
       body: Column(
         children: [
           _buildModeSwitch(colorScheme),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_mode == EffectMode.defense)
-                    _buildDefenseInputs(colorScheme, brightness)
-                  else
-                    _buildOffenseInputs(colorScheme, brightness),
-                  const SizedBox(height: 20),
-                  if (_results.isNotEmpty) ...[
-                    _buildResultLegend(brightness),
-                    const SizedBox(height: 12),
-                    _buildGroupedResults(brightness),
-                  ] else
-                    _buildEmptyHint(colorScheme),
-                  const SizedBox(height: 16),
-                ],
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                layoutBuilder: (currentChild, previousChildren) {
+                  return Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      ...previousChildren,
+                      if (currentChild != null) currentChild,
+                    ],
+                  );
+                },
+                child: Column(
+                  key: ValueKey(_mode),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_mode == EffectMode.defense)
+                      _buildDefenseInputs(colorScheme, brightness)
+                    else
+                      _buildOffenseInputs(colorScheme, brightness),
+                    const SizedBox(height: 20),
+                    if (_results.isNotEmpty) ...[
+                      _buildResultLegend(brightness),
+                      const SizedBox(height: 12),
+                      _buildGroupedResults(brightness),
+                    ] else
+                      _buildEmptyHint(colorScheme),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
           ),
@@ -253,6 +257,7 @@ class _EffectPageState extends State<EffectPage> {
                 hint: _defendType1 != null ? '选择属性 2' : '请先选属性 1',
                 onChange: _onDefendType2Changed,
                 enabled: _defendType1 != null,
+                allowClear: true,
                 typeColor:
                     _defendType2 != null
                         ? PokemonTypeColors.getTypeColor(_defendType2!)
@@ -315,6 +320,7 @@ class _EffectPageState extends State<EffectPage> {
     required ValueChanged<String?> onChange,
     Color? typeColor,
     bool enabled = true,
+    bool allowClear = false,
     required ColorScheme colorScheme,
   }) {
     return Container(
@@ -349,27 +355,33 @@ class _EffectPageState extends State<EffectPage> {
           ),
           dropdownColor: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          items:
-              items.map((type) {
-                final color = PokemonTypeColors.getTypeColor(type);
-                return DropdownMenuItem(
-                  value: type,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                        ),
+          items: [
+            if (allowClear)
+              const DropdownMenuItem<String>(
+                value: null,
+                child: Text('—', style: TextStyle(color: Colors.grey)),
+              ),
+            ...items.map((type) {
+              final color = PokemonTypeColors.getTypeColor(type);
+              return DropdownMenuItem(
+                value: type,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(width: 8),
-                      Text(type),
-                    ],
-                  ),
-                );
-              }).toList(),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(type),
+                  ],
+                ),
+              );
+            }),
+          ],
           onChanged: enabled ? onChange : null,
         ),
       ),

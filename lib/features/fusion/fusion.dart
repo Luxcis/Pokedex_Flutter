@@ -4,6 +4,7 @@ import 'package:pokedex/models/fusion_pokemon_model.dart';
 import 'package:pokedex/providers/fusion_provider.dart';
 import 'package:pokedex/utils/pokemon_type_colors.dart';
 import 'package:pokedex/utils/type_effectiveness.dart';
+import 'package:pokedex/widgets/type_chip.dart';
 import 'package:provider/provider.dart';
 
 class FusionPage extends StatefulWidget {
@@ -230,7 +231,7 @@ class _FusionPageState extends State<FusionPage> {
                               runSpacing: 4,
                               children:
                                   pokemon.types
-                                      .map((t) => _buildTypeChip(t))
+                                      .map((t) => TypeChip(type: t))
                                       .toList(),
                             ),
                           ],
@@ -321,7 +322,7 @@ class _FusionPageState extends State<FusionPage> {
             ...result.types.map(
               (t) => Padding(
                 padding: const EdgeInsets.only(right: 6),
-                child: _buildTypeChip(t),
+                child: TypeChip(type: t),
               ),
             ),
             const Spacer(),
@@ -583,27 +584,6 @@ class _FusionPageState extends State<FusionPage> {
     );
   }
 
-  Widget _buildTypeChip(String type, {bool large = false}) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: large ? 16 : 8,
-        vertical: large ? 8 : 4,
-      ),
-      decoration: BoxDecoration(
-        color: PokemonTypeColors.getTypeColor(type),
-        borderRadius: BorderRadius.circular(large ? 16 : 12),
-      ),
-      child: Text(
-        type,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: large ? 16 : 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
   void _showPokemonPicker(bool isHead) {
     final provider = context.read<FusionProvider>();
     final TextEditingController searchController = TextEditingController();
@@ -737,7 +717,7 @@ class _FusionPageState extends State<FusionPage> {
                                             children:
                                                 pokemon.types
                                                     .map(
-                                                      (t) => _buildTypeChip(t),
+                                                      (t) => TypeChip(type: t),
                                                     )
                                                     .toList(),
                                           ),
